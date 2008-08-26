@@ -108,7 +108,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 			if (![oneChar isEqualToString:@" "]) 
 				[ret appendString:[oneChar lowercaseString]];
 		}
-#if (TARGET_OS_MAC && ! (TARGET_OS_EMBEDDED || TARGET_OS_ASPEN))	
+#if (TARGET_OS_MAC && ! (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR))
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
 		NSString *saveDirectory = [basePath stringByAppendingPathComponent:appName];
