@@ -590,7 +590,6 @@ NSMutableDictionary *objectMap;
 										if (sqlite3_step(xStmt) != SQLITE_DONE)
 											NSLog(@"Error inserting or updating cross-reference row");
 										sqlite3_finalize(xStmt);
-										sqlite3_reset(xStmt);
 									}
 								}
 								else 
@@ -629,7 +628,7 @@ NSMutableDictionary *objectMap;
 										if (sqlite3_step(xStmt) != SQLITE_DONE)
 											NSLog(@"Error inserting or updating cross-reference row");
 										sqlite3_finalize(xStmt);
-										sqlite3_reset(xStmt);
+										
 									}
 								}
 							}
@@ -666,7 +665,6 @@ NSMutableDictionary *objectMap;
 										if (sqlite3_step(xStmt) != SQLITE_DONE)
 											NSLog(@"Error inserting or updating cross-reference row");
 										sqlite3_finalize(xStmt);
-										sqlite3_reset(xStmt);
 									}
 								}
 								else 
@@ -680,7 +678,6 @@ NSMutableDictionary *objectMap;
 		if (sqlite3_step(stmt) != SQLITE_DONE)
 			NSLog(@"Error inserting or updating row");
 		sqlite3_finalize(stmt);
-		sqlite3_reset(stmt);
 	}
 	// Can't register in memory map until we have PK, so do that now.
 	if (![[objectMap allKeys] containsObject:[self memoryMapKey]])
