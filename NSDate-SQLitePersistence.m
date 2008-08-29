@@ -23,14 +23,20 @@
 @implementation NSDate(SQLitePersistence)
 + (id)objectWithSqlColumnRepresentation:(NSString *)columnData;
 {
-	NSTimeInterval seconds = [columnData doubleValue];
-	return [NSDate dateWithTimeIntervalSince1970:seconds];
-
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"
+	return [dateFormatter dateFromString:self];
 }
 - (NSString *)sqlColumnRepresentationOfSelf
 {
-	NSTimeInterval seconds = [self timeIntervalSince1970];
-	return [NSString stringWithFormat:@"%f", seconds];
+	
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"
+	
+	NSString *formattedDateString = [dateFormatter stringFromDate:self];
+	[dateFormatter release];
+	
+	return formattedDateString;
 }
 + (BOOL)canBeStoredInSQLite
 {
