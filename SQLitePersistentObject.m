@@ -184,7 +184,6 @@ NSMutableDictionary *objectMap;
 							const char * rawData = sqlite3_column_blob(statement, i);
 							int rawDataLength = sqlite3_column_bytes(statement, i);
 							NSData *data = [NSData dataWithBytes:rawData length:rawDataLength];
-							[data writeToFile:@"/Users/jeff/Desktop/intermediate" atomically:YES];
 							id colData = [propClass objectWithSQLBlobRepresentation:data];
 							[oneItem setValue:colData forKey:propName];
 						}
