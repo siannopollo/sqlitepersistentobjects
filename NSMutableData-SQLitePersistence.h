@@ -17,7 +17,7 @@
 // For information on how to use these classes, take a look at the 
 // included eadme.txt file
 // ----------------------------------------------------------------------
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import "NSObject-SQLitePersistence.h"
 #import "NSData-SQLitePersistence.h"
 

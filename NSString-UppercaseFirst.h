@@ -17,7 +17,11 @@
 // For information on how to use these classes, take a look at the 
 // included eadme.txt file
 // ----------------------------------------------------------------------
+#if (TARGET_OS_MAC && ! (TARGET_OS_EMBEDDED || TARGET_OS_ASPEN))	
 #import <Cocoa/Cocoa.h>
+#else
+#import <UIKit/UIKit.h>
+#endif
 
 
 @interface NSString(UppercaseFirst)

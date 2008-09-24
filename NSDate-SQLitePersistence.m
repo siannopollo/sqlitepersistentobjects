@@ -23,7 +23,7 @@
 @implementation NSDate(SQLitePersistence)
 + (id)objectWithSqlColumnRepresentation:(NSString *)columnData;
 {
-	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"
 	return [dateFormatter dateFromString:self];
 }
