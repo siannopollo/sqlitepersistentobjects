@@ -84,6 +84,11 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 			NSAssert1(0, @"Failed to open database with message '%s'.", sqlite3_errmsg(database));
 			sqlite3_close(database);
 		}
+		
+		if (sqlite3_exec(database, "PRAGMA encoding = \"UTF-8\"", NULL, NULL, &errorMsg) != SQLITE_OK) {
+			NSAssert1(0, @"Failed to switch encoding to UTF-8 with message '%s'.", errorMsg);
+			sqlite3_free(errorMsg);
+		} 
 	}
 	return database;
 }
