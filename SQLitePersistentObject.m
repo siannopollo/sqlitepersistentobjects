@@ -398,7 +398,7 @@ NSMutableDictionary *objectMap;
 	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 	
 	NSString *query = [NSString stringWithFormat:@"SELECT pk, %@ FROM %@ ORDER BY %@", [theProp stringAsSQLColumnName], [[self class] tableName],  [theProp stringAsSQLColumnName]];
-	NSLog(@"Query: %@", query);
+
 	sqlite3_stmt *statement;
 	if (sqlite3_prepare_v2( database, [query UTF8String], -1, &statement, NULL) == SQLITE_OK)
 	{
@@ -414,16 +414,6 @@ NSMutableDictionary *objectMap;
 }
 +(NSDictionary *)propertiesWithEncodedTypes
 {
-	//	static NSMutableDictionary *encodedTypesByClass = nil;
-	//	
-	//	if (encodedTypesByClass == nil)
-	//		encodedTypesByClass = [[NSMutableDictionary alloc] init];
-	//	
-	//	if ([[encodedTypesByClass allKeys] containsObject:[self className]])
-	//		return [encodedTypesByClass objectForKey:[self className]];
-	
-	// DO NOT use a static variable to cache this, it will cause problem with subclasses of classes that are subclasses of SQLitePersistentObject
-	
 	// Recurse up the classes, but stop at NSObject. Each class only reports its own properties, not those inherited from its superclass
 	NSMutableDictionary *theProps;
 	
