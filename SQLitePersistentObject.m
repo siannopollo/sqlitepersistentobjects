@@ -733,7 +733,7 @@ NSMutableDictionary *objectMap;
 		tableChecked = YES;
 		[[self class] tableCheck];
 		
-		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self className], pk];
+		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [[self className] tableName], pk];
 		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 		char *errmsg = NULL;
 		if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
@@ -753,7 +753,7 @@ NSMutableDictionary *objectMap;
 					if (cascade)
 					{
 						Class fkClass = objc_lookUpClass([prop UTF8String]);
-						NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName], [self className],  [prop stringAsSQLColumnName], pk];
+						NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self className] tableName],  [prop stringAsSQLColumnName], pk];
 						// Suppress the error if there was one: it's faster than checking to see if the table exists. 
 						// It may not if the property was used to store strings or another storage class but never
 						// a subclass of SQLitePersistentObject
@@ -761,7 +761,7 @@ NSMutableDictionary *objectMap;
 						
 					}
 					
-					NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d", [self className], [prop stringAsSQLColumnName], pk];
+					NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self className] tableName], [prop stringAsSQLColumnName], pk];
 					if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
 						NSLog(@"Error deleting from foreign key table: %s", errmsg);
 					sqlite3_free(errmsg);
