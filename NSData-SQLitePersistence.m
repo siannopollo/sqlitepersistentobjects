@@ -25,7 +25,7 @@
 
 - (NSData *)sqlBlobRepresentationOfSelf
 {
-	return self;
+	return UIImagePNGRepresentation (self);
 }
 + (BOOL)canBeStoredInSQLite
 {
@@ -42,6 +42,6 @@
 + (id)objectWithSQLBlobRepresentation:(NSData *)data;
 {
 	// Simple pass through
-	return data;
+	return  [UIImage imageWithData:data];	
 }
 @end

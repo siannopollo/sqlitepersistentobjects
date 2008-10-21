@@ -24,14 +24,14 @@
 + (id)objectWithSqlColumnRepresentation:(NSString *)columnData;
 {
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"
+	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
 	return [dateFormatter dateFromString:self];
 }
 - (NSString *)sqlColumnRepresentationOfSelf
 {
 	
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"
+	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
 	
 	NSString *formattedDateString = [dateFormatter stringFromDate:self];
 	[dateFormatter release];

@@ -120,4 +120,10 @@
  Returns this objects primary key
  */
 -(int)pk;
+
+/*! 
+ This method will return a dictionary using the value for one specified field as the key and the pk stored as an NSNumber as the object. This is designed for letting you retrieve a list for display without having to load all objects into memory.
+ */
++(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp;
+
 @end

@@ -378,6 +378,27 @@ NSMutableDictionary *objectMap;
 	
 	return ret;
 }
++(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp 
+{
+	NSMutableDictionary *ret = [NSMutableDictionary dictionary];
+	[[self class] tableCheck];
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	
+	NSString *query = [NSString stringWithFormat:@"SELECT pk, %@ FROM %@ ORDER BY %@", [theProp stringAsSQLColumnName], [[self class] tableName],  [theProp stringAsSQLColumnName]];
+	NSLog(@"Query: %@", query);
+	sqlite3_stmt *statement;
+	if (sqlite3_prepare_v2( database, [query UTF8String], -1, &statement, NULL) == SQLITE_OK)
+	{
+		while (sqlite3_step(statement) == SQLITE_ROW)
+		{
+			NSNumber *thePK = [NSNumber numberWithInt:sqlite3_column_int(statement, 0)];
+			NSString *theName = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
+			[ret setObject:thePK forKey:theName];
+		}
+	}
+	sqlite3_finalize(statement);
+	return ret;
+}
 +(NSDictionary *)propertiesWithEncodedTypes
 {
 	//	static NSMutableDictionary *encodedTypesByClass = nil;

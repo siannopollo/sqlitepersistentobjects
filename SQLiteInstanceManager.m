@@ -74,6 +74,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 -(sqlite3 *)database
 {
 	static BOOL first = YES;
+	char *errmsg = NULL;
 	
 	if (first || database == NULL)
 	{
@@ -85,9 +86,9 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 			sqlite3_close(database);
 		}
 		
-		if (sqlite3_exec(database, "PRAGMA encoding = \"UTF-8\"", NULL, NULL, &errorMsg) != SQLITE_OK) {
-			NSAssert1(0, @"Failed to switch encoding to UTF-8 with message '%s'.", errorMsg);
-			sqlite3_free(errorMsg);
+		if (sqlite3_exec(database, "PRAGMA encoding = \"UTF-8\"", NULL, NULL, &errmsg) != SQLITE_OK) {
+			NSAssert1(0, @"Failed to switch encoding to UTF-8 with message '%s'.", errmsg);
+			sqlite3_free(errmsg);
 		} 
 	}
 	return database;
