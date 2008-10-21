@@ -25,7 +25,7 @@
 {
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
-	return [dateFormatter dateFromString:self];
+	return [dateFormatter dateFromString:columnData];
 }
 - (NSString *)sqlColumnRepresentationOfSelf
 {
