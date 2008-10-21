@@ -22,6 +22,9 @@
 #import "NSObject-SQLitePersistence.h"
 #import "NSString-UppercaseFirst.h"
 
+
+
+
 id findByMethodImp(id self, SEL _cmd, id value)
 {
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
@@ -71,6 +74,16 @@ id findByMethodImp(id self, SEL _cmd, id value)
 NSMutableDictionary *objectMap;
 
 @implementation SQLitePersistentObject
+#if (TARGET_OS_IPHONE)
+- (NSString *)className
+{
+	return [NSString stringWithUTF8String:class_getName([self class])];
+}
++ (NSString *)className
+{
+	return [NSString stringWithUTF8String:class_getName(self)];
+}
+#endif
 #pragma mark Public Class Methods
 +(NSArray *)indices
 {

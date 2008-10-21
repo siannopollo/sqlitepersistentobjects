@@ -20,7 +20,13 @@
 
 #import <Foundation/Foundation.h>
 #import "/usr/include/sqlite3.h"
+
+#if (! TARGET_OS_IPHONE)
 #import <objc/objc-runtime.h>
+#else
+#import <objc/runtime.h>
+#import <objc/message.h>
+#endif
 
 #define isNSArrayType(x) ([x isEqualToString:@"NSArray"] || [x isEqualToString:@"NSMutableArray"])
 #define isNSDictionaryType(x) ([x isEqualToString:@"NSDictionary"] || [x isEqualToString:@"NSMutableDictionary"])
@@ -126,4 +132,8 @@
  */
 +(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp;
 
+#if (TARGET_OS_IPHONE)
+- (NSString *)className;
++ (NSString *)className;
+#endif
 @end

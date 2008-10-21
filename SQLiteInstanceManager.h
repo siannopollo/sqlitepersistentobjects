@@ -23,7 +23,13 @@
 #import <UIKit/UIKit.h>
 #endif
 #import "/usr/include/sqlite3.h"
+
+#if (! TARGET_OS_IPHONE)
 #import <objc/objc-runtime.h>
+#else
+#import <objc/runtime.h>
+#import <objc/message.h>
+#endif
 
 @interface SQLiteInstanceManager : NSObject {
 
