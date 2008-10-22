@@ -84,6 +84,7 @@ NSMutableDictionary *objectMap;
 }
 #endif
 #pragma mark Public Class Methods
+#pragma mark -
 +(NSArray *)indices
 {
 	return nil;
@@ -96,6 +97,24 @@ NSMutableDictionary *objectMap;
 			return [array objectAtIndex:0];
 	return  nil;
 }
++ (NSInteger)count 
+{
+    NSInteger countOfRecords;
+    countOfRecords = 0;
+    NSString *countQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@", [self tableName]];
+	
+    sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+    sqlite3_stmt *statement;
+    if (sqlite3_prepare_v2(database, [countQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
+    {
+        if (sqlite3_step(statement) == SQLITE_ROW)
+            countOfRecords = sqlite3_column_int(statement, 0);
+    }
+    else NSLog(@"Error determining count of rows in table %@", [self  tableName]);
+    sqlite3_finalize(statement);
+    return countOfRecords;
+}
+
 +(SQLitePersistentObject *)findByPK:(int)inPk
 {
 	return [self findFirstByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", inPk]];
