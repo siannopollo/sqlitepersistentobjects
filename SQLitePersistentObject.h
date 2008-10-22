@@ -132,9 +132,11 @@
  */
 +(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp;
 
++ (NSInteger)count; 
++ (NSInteger)countByCriteria:(NSString *)criteriaString;
 
 // TODO: These really belong in a category on NSObject - not sure why these don't exist on the iPhone...
-+ (NSInteger)count; 
+
 #if (TARGET_OS_IPHONE)
 - (NSString *)className;
 + (NSString *)className;

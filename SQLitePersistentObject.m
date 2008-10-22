@@ -97,11 +97,17 @@ NSMutableDictionary *objectMap;
 			return [array objectAtIndex:0];
 	return  nil;
 }
-+ (NSInteger)count 
++ (NSInteger)count
 {
+    return [self countByCriteria:@""];
+}
++ (NSInteger)countByCriteria:(NSString *)criteriaString
+{
+    [self tableCheck];
     NSInteger countOfRecords;
     countOfRecords = 0;
-    NSString *countQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@", [self tableName]];
+    NSString *countQuery;
+    countQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@ %@", [self tableName], criteriaString];
 	
     sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
     sqlite3_stmt *statement;
@@ -109,8 +115,9 @@ NSMutableDictionary *objectMap;
     {
         if (sqlite3_step(statement) == SQLITE_ROW)
             countOfRecords = sqlite3_column_int(statement, 0);
-    }
+    } 
     else NSLog(@"Error determining count of rows in table %@", [self  tableName]);
+	
     sqlite3_finalize(statement);
     return countOfRecords;
 }
