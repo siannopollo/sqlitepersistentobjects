@@ -21,7 +21,6 @@
 #import "NSString-SQLiteColumnName.h"
 #import "NSObject-SQLitePersistence.h"
 #import "NSString-UppercaseFirst.h"
-#import "NSString-SQLiteColumnName
 
 
 
