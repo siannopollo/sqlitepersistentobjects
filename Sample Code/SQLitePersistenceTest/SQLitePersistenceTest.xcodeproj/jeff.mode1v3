@@ -310,7 +310,7 @@
 							<real>308</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>725 349 1255 829 0 0 1920 1178 </string>
+						<string>480 344 1255 829 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -340,7 +340,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1F0ADBD40EBB5EE000355F7A</string>
+										<string>1F0ADBD90EBB61CD00355F7A</string>
 										<key>history</key>
 										<array>
 											<string>1F9E2A3D0EAD8219002D26B8</string>
@@ -379,7 +379,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {903, 610}}</string>
 								<key>RubberWindowFrame</key>
-								<string>725 349 1255 829 0 0 1920 1178 </string>
+								<string>480 344 1255 829 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -399,7 +399,7 @@
 								<key>Frame</key>
 								<string>{{0, 615}, {903, 173}}</string>
 								<key>RubberWindowFrame</key>
-								<string>725 349 1255 829 0 0 1920 1178 </string>
+								<string>480 344 1255 829 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -559,11 +559,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>1F9E28900EAD6A6F002D26B8</string>
 		<string>/Users/jeff/dev/sqlitepersistentobjects/Sample Code/SQLitePersistenceTest/SQLitePersistenceTest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>725 349 1255 829 0 0 1920 1178 </string>
+	<string>480 344 1255 829 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -795,14 +796,12 @@
 							<key>Dock</key>
 							<array>
 								<dict>
-									<key>BecomeActive</key>
-									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SQLitePersistentObject.m</string>
+										<string></string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -811,7 +810,7 @@
 										<key>Frame</key>
 										<string>{{0, 0}, {1079, 271}}</string>
 										<key>RubberWindowFrame</key>
-										<string>403 544 1079 529 0 0 1920 1178 </string>
+										<string>84 460 1079 529 0 0 1920 1178 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXNavigatorGroup</string>
@@ -823,6 +822,8 @@
 							<string>271pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -835,7 +836,7 @@
 								<key>Frame</key>
 								<string>{{0, 276}, {1079, 212}}</string>
 								<key>RubberWindowFrame</key>
-								<string>403 544 1079 529 0 0 1920 1178 </string>
+								<string>84 460 1079 529 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXProjectFindModule</string>
@@ -858,17 +859,17 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>1F83C4CA0EAD9F87001950CA</string>
-				<string>1F83C4CB0EAD9F87001950CA</string>
+				<string>1F0ADBD70EBB61AE00355F7A</string>
+				<string>1F0ADBD80EBB61AE00355F7A</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
 			<key>WindowString</key>
-			<string>403 544 1079 529 0 0 1920 1178 </string>
+			<string>84 460 1079 529 0 0 1920 1178 </string>
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>
