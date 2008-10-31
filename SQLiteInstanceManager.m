@@ -25,6 +25,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 #pragma mark Private Method Declarations
 @interface SQLiteInstanceManager (private)
 - (NSString *)databaseFilepath;
+- (void)executeUpdateSQL:(NSString *) updateSQL;
 @end
 
 @implementation SQLiteInstanceManager
@@ -34,47 +35,47 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	@synchronized(self) 
 	{
-        if (sharedSQLiteManager == nil) 
-            [[self alloc] init]; 
-    }
-    return sharedSQLiteManager;
+		if (sharedSQLiteManager == nil) 
+			[[self alloc] init]; 
+	}
+	return sharedSQLiteManager;
 }
 + (id)allocWithZone:(NSZone *)zone
 {
-    @synchronized(self) {
-        if (sharedSQLiteManager == nil) 
+	@synchronized(self) {
+		if (sharedSQLiteManager == nil) 
 		{
-            sharedSQLiteManager = [super allocWithZone:zone];
-            return sharedSQLiteManager; 
-        }
-    }
-    return nil;
+			sharedSQLiteManager = [super allocWithZone:zone];
+			return sharedSQLiteManager; 
+		}
+	}
+	return nil;
 }
 - (id)copyWithZone:(NSZone *)zone
 {
-    return self;
+	return self;
 }
 - (id)retain
 {
-    return self;
+	return self;
 }
 - (unsigned)retainCount
 {
-    return UINT_MAX;  //denotes an object that cannot be released
+	return UINT_MAX;  //denotes an object that cannot be released
 }
 - (void)release
 {
-    // never release
+	// never release
 }
 - (id)autorelease
 {
-    return self;
+	return self;
 }
 #pragma mark -
+#pragma mark Public Instance Methods
 -(sqlite3 *)database
 {
 	static BOOL first = YES;
-	char *errmsg = NULL;
 	
 	if (first || database == NULL)
 	{
@@ -85,13 +86,37 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 			NSAssert1(0, @"Failed to open database with message '%s'.", sqlite3_errmsg(database));
 			sqlite3_close(database);
 		}
-		
-		if (sqlite3_exec(database, "PRAGMA encoding = \"UTF-8\"", NULL, NULL, &errmsg) != SQLITE_OK) {
-			NSAssert1(0, @"Failed to switch encoding to UTF-8 with message '%s'.", errmsg);
-			sqlite3_free(errmsg);
-		} 
+		else
+		{
+			// Default to UTF-8 encoding
+			[self executeUpdateSQL:@"PRAGMA encoding = \"UTF-8\""];
+			
+			// Turn on full auto-vacuuming to keep the size of the database down
+			// This setting can be changed per database using the setAutoVacuum instance method
+			[self executeUpdateSQL:@"PRAGMA auto_vacuum=1"];
+			
+		}
 	}
 	return database;
+}
+- (void)setAutoVacuum:(SQLITE3AutoVacuum)mode
+{
+	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA auto_vacuum=%d", mode];
+	[self executeUpdateSQL:updateSQL];
+}
+- (void)setCacheSize:(NSUInteger)pages
+{
+	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA cache_size=%d", pages];
+	[self executeUpdateSQL:updateSQL];
+}
+- (void)setLockingMode:(SQLITE3LockingMode)mode
+{
+	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA cache_size=%d", mode];
+	[self executeUpdateSQL:updateSQL];
+}
+- (void)vacuum
+{
+	[self executeUpdateSQL:@"VACUUM"];
 }
 #pragma mark -
 - (void)dealloc
@@ -101,6 +126,15 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 }
 #pragma mark -
 #pragma mark Private Methods
+- (void)executeUpdateSQL:(NSString *) updateSQL
+{
+	char *errorMsg;
+	if (sqlite3_exec([self database],[updateSQL UTF8String] , NULL, NULL, &errorMsg) != SQLITE_OK) {
+		NSString *errorMessage = [NSString stringWithFormat:@"Failed to execute SQL '%@' with message '%s'.", updateSQL, errorMsg];
+		NSAssert(0, errorMessage);
+		sqlite3_free(errorMsg);
+	}
+}
 - (NSString *)databaseFilepath
 {
 	if (databaseFilepath == nil)
