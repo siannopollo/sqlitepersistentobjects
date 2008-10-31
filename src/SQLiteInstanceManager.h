@@ -31,6 +31,20 @@
 #import <objc/message.h>
 #endif
 
+typedef enum SQLITE3AutoVacuum
+{
+	kSQLITE3AutoVacuumNoAutoVacuum = 0,
+	kSQLITE3AutoVacuumFullVacuum,
+	kSQLITE3AutoVacuumIncrementalVacuum,
+		
+} SQLITE3AutoVacuum;
+typedef enum SQLITE3LockingMode
+{
+	kSQLITE3LockingModeNormal = 0,
+	kSQLITE3LockingModeExclusive,
+} SQLITE3LockingMode;
+
+
 @interface SQLiteInstanceManager : NSObject {
 
 	@private
@@ -38,6 +52,10 @@
 	NSString *databaseFilepath;
 	sqlite3 *database;
 }
-- (sqlite3 *)database;
 + (id)sharedManager;
+- (sqlite3 *)database;
+- (void)setAutoVacuum:(SQLITE3AutoVacuum)mode;
+- (void)setCacheSize:(NSUInteger)pages;
+- (void)setLockingMode:(SQLITE3LockingMode)mode;
+- (void)vacuum;
 @end
