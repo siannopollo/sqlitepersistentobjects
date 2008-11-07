@@ -56,6 +56,7 @@
 +(NSArray *)findByCriteria:(NSString *)criteriaString;
 +(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString;
 +(SQLitePersistentObject *)findByPK:(int)inPk;
++(NSArray *)allObjects;
 
 /*!
  This method should be overridden by subclasses in order to specify performance indices on the underyling table. 
