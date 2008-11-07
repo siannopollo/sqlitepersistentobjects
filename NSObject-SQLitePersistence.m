@@ -51,7 +51,7 @@
 	id ret = [unarchiver decodeObjectForKey:[self className]];
 	[unarchiver finishDecoding];
 	[unarchiver release];
-	[data release];
+	//[data release];
 	
 	return ret;
 }

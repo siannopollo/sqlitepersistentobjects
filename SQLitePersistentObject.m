@@ -174,7 +174,6 @@ NSMutableDictionary *objectMap;
 				else
 				{
 					
-					
 					NSString *propName = [colName stringAsPropertyString];
 					
 					NSString *colType = [theProps valueForKey:propName];
