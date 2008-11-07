@@ -21,7 +21,7 @@
 #import "NSString-SQLiteColumnName.h"
 #import "NSObject-SQLitePersistence.h"
 #import "NSString-UppercaseFirst.h"
-
+#import "NSString-NumberStuff.h"
 
 
 id findByMethodImp(id self, SEL _cmd, id value)
@@ -83,8 +83,9 @@ NSMutableDictionary *objectMap;
 	return [NSString stringWithUTF8String:class_getName(self)];
 }
 #endif
-#pragma mark Public Class Methods
 #pragma mark -
+#pragma mark Public Class Methods
+
 +(NSArray *)indices
 {
 	return nil;
@@ -121,7 +122,10 @@ NSMutableDictionary *objectMap;
     sqlite3_finalize(statement);
     return countOfRecords;
 }
-
++(NSArray *)allObjects
+{
+	return [[self class] findByCriteria:@""];
+}
 +(SQLitePersistentObject *)findByPK:(int)inPk
 {
 	return [self findFirstByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", inPk]];
@@ -202,6 +206,31 @@ NSMutableDictionary *objectMap;
 						NSNumber *colVal = [NSNumber numberWithFloat:sqlite3_column_double(statement, i)];
 						[oneItem setValue:colVal forKey:propName];
 					}
+					else if ([colType isEqualToString:@"c"] ||	// char
+							 [colType isEqualToString:@"C"] ) // unsigned char
+						
+					{
+						const char *colVal = (const char *)sqlite3_column_text(statement, i);
+						NSString *colValString = [NSString stringWithUTF8String:colVal];
+						if (colVal != nil)
+						{
+							
+							if ([colValString holdsFloatingPointValue])
+							{
+								NSNumber *number = [NSNumber numberWithDouble:[colValString doubleValue]];
+								[oneItem setValue:number forKey:propName];
+							}
+							else if ([colValString holdsIntegerValue])
+							{
+								NSNumber *number = [NSNumber numberWithInt:[colValString intValue]];
+								[oneItem setValue:number forKey:propName];
+							}
+							else
+							{
+								[oneItem setValue:colValString forKey:propName];
+							}
+						}
+					}
 					else if ([colType hasPrefix:@"@"])
 					{
 						NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
@@ -227,20 +256,6 @@ NSMutableDictionary *objectMap;
 						}
 						else
 						{
-							/*
-							 +                                                       id colData = nil;
-							 +                                                       const char *columnText =
-							 (const char *)sqlite3_column_text(statement, i);
-							 +                                                       if (NULL != columnText) {
-							 +                                                               colData = [propClass
-							 objectWithSqlColumnRepresentation:[NSString stringWithUTF8String:columnText]];
-							 +                                                       }
-							 [oneItem setValue:colData
-							 forKey:propName];
-							 }
-							 */
-							
-							
 							id colData = nil;
 							const char *columnText = (const char *)sqlite3_column_text(statement, i);
 							if (NULL != columnText)
@@ -573,14 +588,7 @@ NSMutableDictionary *objectMap;
 					 [propType isEqualToString:@"C"] ) // unsigned char
 				
 			{
-				// ======================================
-				// THESE DON'T WORK CURRENTLY
-				//    do not use char, unsigned char, or
-				//    char * in properties to be
-				//    persisted
-				// ======================================
-				char oneChar = [[theProperty valueForKey:propName] charValue];
-				NSString *theString = [NSString stringWithCharacters:(unichar *)&oneChar length:1];
+				NSString *theString = [theProperty stringValue];
 				sqlite3_bind_text(stmt, colIndex, [theString UTF8String], -1, NULL);
 			}
 			else if ([propType hasPrefix:@"@"] ) // Object
