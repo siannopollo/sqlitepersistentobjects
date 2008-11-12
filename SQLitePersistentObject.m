@@ -73,7 +73,7 @@ id findByMethodImp(id self, SEL _cmd, id value)
 NSMutableDictionary *objectMap;
 
 @implementation SQLitePersistentObject
-#if (TARGET_OS_IPHONE)
+#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
 - (NSString *)className
 {
 	return [NSString stringWithUTF8String:class_getName([self class])];
