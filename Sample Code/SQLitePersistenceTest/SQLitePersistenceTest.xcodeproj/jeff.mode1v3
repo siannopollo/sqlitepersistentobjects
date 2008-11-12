@@ -340,7 +340,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1F0ADBD90EBB61CD00355F7A</string>
+										<string>1F1263310EC334EA00013CE1</string>
 										<key>history</key>
 										<array>
 											<string>1F9E2A3D0EAD8219002D26B8</string>
@@ -352,7 +352,7 @@
 											<string>1F83C4D40EAD9FC5001950CA</string>
 											<string>1F83C9750EAFA657001950CA</string>
 											<string>1F0ADBCF0EBB5EA200355F7A</string>
-											<string>1F0ADBC70EBB5E6000355F7A</string>
+											<string>1F0ADEE20EBF7E4E00355F7A</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -423,9 +423,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1F0ADBCB0EBB5E6000355F7A</string>
+				<string>1F1263320EC334EA00013CE1</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1F0ADBCC0EBB5E6000355F7A</string>
+				<string>1F1263330EC334EA00013CE1</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,8 +559,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1F9E28900EAD6A6F002D26B8</string>
 		<string>/Users/jeff/dev/sqlitepersistentobjects/Sample Code/SQLitePersistenceTest/SQLitePersistenceTest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>

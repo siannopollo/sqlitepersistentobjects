@@ -138,7 +138,7 @@
 
 // TODO: These really belong in a category on NSObject - not sure why these don't exist on the iPhone...
 
-#if (TARGET_OS_IPHONE)
+#if (TARGET_OS_IPHONE || TARGET_OS_IPHONE)
 - (NSString *)className;
 + (NSString *)className;
 #endif
