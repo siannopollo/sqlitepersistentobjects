@@ -13,10 +13,10 @@
 	NSString	*name;
 	NSDate		*birthDate;
 	UIImage		*image;
-	int			favoriteInt;
+	NSInteger	favoriteInt;
 }
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSDate *birthDate;
 @property (nonatomic, retain) UIImage *image;
-@property int favoriteInt;
+@property NSInteger favoriteInt;
 @end

@@ -282,8 +282,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>20</integer>
-									<integer>2</integer>
+									<integer>26</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -328,7 +327,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SQLiteInstanceManager.m</string>
+								<string>Person.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -336,23 +335,24 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SQLiteInstanceManager.m</string>
+										<string>Person.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>1F1263310EC334EA00013CE1</string>
+										<string>1FD867900EFAA5FF00911736</string>
 										<key>history</key>
 										<array>
 											<string>1F9E2A3D0EAD8219002D26B8</string>
 											<string>1F83C4CF0EAD9FC5001950CA</string>
 											<string>1F83C4D00EAD9FC5001950CA</string>
 											<string>1F83C4D10EAD9FC5001950CA</string>
-											<string>1F83C4D20EAD9FC5001950CA</string>
-											<string>1F83C4D30EAD9FC5001950CA</string>
 											<string>1F83C4D40EAD9FC5001950CA</string>
 											<string>1F83C9750EAFA657001950CA</string>
 											<string>1F0ADBCF0EBB5EA200355F7A</string>
-											<string>1F0ADEE20EBF7E4E00355F7A</string>
+											<string>1FD8678A0EFAA5FF00911736</string>
+											<string>1FD8678B0EFAA5FF00911736</string>
+											<string>1FD8678C0EFAA5FF00911736</string>
+											<string>1F83C4D30EAD9FC5001950CA</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -366,6 +366,10 @@
 											<string>1F9E29BD0EAD79C6002D26B8</string>
 											<string>1F0ADBC90EBB5E6000355F7A</string>
 											<string>1F0ADBD00EBB5EA200355F7A</string>
+											<string>1FD8677E0EFAA4AB00911736</string>
+											<string>1FD8678D0EFAA5FF00911736</string>
+											<string>1FD8678E0EFAA5FF00911736</string>
+											<string>1FD8678F0EFAA5FF00911736</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -423,9 +427,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1F1263320EC334EA00013CE1</string>
+				<string>1FD867800EFAA4AB00911736</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1F1263330EC334EA00013CE1</string>
+				<string>1FD867810EFAA4AB00911736</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -559,6 +563,9 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C78EAAD065D492600B07095</string>
+		<string>1CD10A99069EF8BA00B06720</string>
+		<string>1F9E28900EAD6A6F002D26B8</string>
 		<string>/Users/jeff/dev/sqlitepersistentobjects/Sample Code/SQLitePersistenceTest/SQLitePersistenceTest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -585,7 +592,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SQLiteInstanceManager.m</string>
+								<string>SQLitePersistentObject.h</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -641,7 +648,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1F9E28900EAD6A6F002D26B8</string>
-				<string>1F0ADBC20EBB5E2500355F7A</string>
+				<string>1FD867820EFAA4AB00911736</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -652,7 +659,7 @@
 			<key>WindowToolGUID</key>
 			<string>1F9E28900EAD6A6F002D26B8</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>FirstTimeWindowDisplayed</key>
@@ -683,8 +690,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {316, 202}}</string>
-											<string>{{316, 0}, {378, 202}}</string>
+											<string>{{0, 0}, {316, 203}}</string>
+											<string>{{316, 0}, {378, 203}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -699,8 +706,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {694, 202}}</string>
-											<string>{{0, 202}, {694, 179}}</string>
+											<string>{{0, 0}, {694, 203}}</string>
+											<string>{{0, 203}, {694, 178}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -733,7 +740,7 @@
 										<real>148</real>
 									</array>
 									<key>Frame</key>
-									<string>{{316, 0}, {378, 202}}</string>
+									<string>{{316, 0}, {378, 203}}</string>
 									<key>RubberWindowFrame</key>
 									<string>273 628 694 422 0 0 1920 1178 </string>
 								</dict>
@@ -761,13 +768,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>1F83C9660EAFA41F001950CA</string>
+				<string>1FD867910EFAA5FF00911736</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>1F83C9670EAFA41F001950CA</string>
-				<string>1F83C9680EAFA41F001950CA</string>
-				<string>1F83C9690EAFA41F001950CA</string>
-				<string>1F83C96A0EAFA41F001950CA</string>
-				<string>1F83C96B0EAFA41F001950CA</string>
+				<string>1FD867920EFAA5FF00911736</string>
+				<string>1FD867930EFAA5FF00911736</string>
+				<string>1FD867940EFAA5FF00911736</string>
+				<string>1FD867950EFAA5FF00911736</string>
+				<string>1FD867960EFAA5FF00911736</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -921,7 +928,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>1F83C96C0EAFA41F001950CA</string>
+				<string>1FD867970EFAA5FF00911736</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
