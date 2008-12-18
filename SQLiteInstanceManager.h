@@ -22,6 +22,7 @@
 #else
 #import <UIKit/UIKit.h>
 #endif
+//#import "/usr/include/sqlite3.h"
 #import <sqlite3.h>
 
 #if (! TARGET_OS_IPHONE)
