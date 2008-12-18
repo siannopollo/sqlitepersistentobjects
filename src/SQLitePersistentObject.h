@@ -19,7 +19,8 @@
 // ----------------------------------------------------------------------
 
 #import <Foundation/Foundation.h>
-#import "/usr/include/sqlite3.h"
+//#import "/usr/include/sqlite3.h"
+#import <sqlite3.h>
 
 #if (! TARGET_OS_IPHONE)
 #import <objc/objc-runtime.h>
