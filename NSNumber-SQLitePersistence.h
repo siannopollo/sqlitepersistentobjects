@@ -26,7 +26,7 @@
 /*!
  This method initializes an NSNumber from REAL colum data pulled from the database.
  */
-+ (id)ObjectWithSqlColumnRepresentation:(NSString *)columnData;
++ (id)objectWithSqlColumnRepresentation:(NSString *)columnData;
 
 /*!
  This method returns self as a number.

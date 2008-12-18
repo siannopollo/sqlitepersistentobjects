@@ -242,7 +242,7 @@ NSMutableDictionary *objectMap;
 							NSString *classString = [parts objectAtIndex:0];
 							int fk = [[parts objectAtIndex:1] intValue];
 							Class propClass = objc_lookUpClass([classString UTF8String]);
-							id fkObj = [propClass findByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", fk]];
+							id fkObj = [propClass findByPK:fk];
 							[oneItem setValue:fkObj forKey:propName];
 						}
 						else if ([propClass shouldBeStoredInBlob])

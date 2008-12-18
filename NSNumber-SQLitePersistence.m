@@ -21,7 +21,7 @@
 
 
 @implementation NSNumber(SQLitePersistence)
-+ (id)ObjectWithSqlColumnRepresentation:(NSString *)columnData
++ (id)objectWithSqlColumnRepresentation:(NSString *)columnData
 {
 	double doubleValue = [columnData doubleValue];
 	long long longValue = [columnData longLongValue];
