@@ -23,13 +23,24 @@
 @implementation NSDate(SQLitePersistence)
 + (id)objectWithSqlColumnRepresentation:(NSString *)columnData;
 {
+#ifdef TARGET_OS_COCOTRON
+	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] initWithDateFormat:@"%Y-%m-%d %H:%M:%S.%F" allowNaturalLanguage:NO] autorelease];
+	NSDate *d;
+	BOOL cvt = [dateFormatter getObjectValue:&d forString:columnData errorDescription:nil];
+	assert(cvt);
+	return d;
+#else
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
 	return [dateFormatter dateFromString:columnData];
+#endif
 }
 - (NSString *)sqlColumnRepresentationOfSelf
 {
-	
+#ifdef TARGET_OS_COCOTRON
+	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] initWithDateFormat:@"%Y-%m-%d %H:%M:%S.%F" allowNaturalLanguage:NO] autorelease];
+	return [dateFormatter stringForObjectValue:self];
+#else
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSSS"];
 	
@@ -37,6 +48,7 @@
 	[dateFormatter release];
 	
 	return formattedDateString;
+#endif
 }
 + (BOOL)canBeStoredInSQLite
 {

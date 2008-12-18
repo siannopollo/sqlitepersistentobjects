@@ -18,11 +18,11 @@
 // included eadme.txt file
 // ----------------------------------------------------------------------
 #if (TARGET_OS_MAC && ! (TARGET_OS_EMBEDDED || TARGET_OS_ASPEN || TARGET_OS_IPHONE))	
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #else
 #import <UIKit/UIKit.h>
 #endif
-#import "/usr/include/sqlite3.h"
+#import <sqlite3.h>
 
 #if (! TARGET_OS_IPHONE)
 #import <objc/objc-runtime.h>
@@ -52,6 +52,9 @@ typedef enum SQLITE3LockingMode
 	NSString *databaseFilepath;
 	sqlite3 *database;
 }
+
+@property (readwrite,retain) NSString *databaseFilepath;
+
 + (id)sharedManager;
 - (sqlite3 *)database;
 - (void)setAutoVacuum:(SQLITE3AutoVacuum)mode;

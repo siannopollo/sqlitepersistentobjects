@@ -142,4 +142,9 @@
 - (NSString *)className;
 + (NSString *)className;
 #endif
+
+#ifdef TARGET_OS_COCOTRON
++ (NSArray *)getPropertiesList;
+#endif
+
 @end
