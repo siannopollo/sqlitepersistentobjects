@@ -29,6 +29,9 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 @end
 
 @implementation SQLiteInstanceManager
+
+@synthesize databaseFilepath;
+
 #pragma mark -
 #pragma mark Singleton Methods
 + (id)sharedManager 
@@ -148,7 +151,9 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 			if (![oneChar isEqualToString:@" "]) 
 				[ret appendString:[oneChar lowercaseString]];
 		}
-#if (TARGET_OS_MAC && ! (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR))
+#if (TARGET_OS_COCOTRON)
+		NSString *saveDirectory = @"./"; // TODO: default path is undefined on coctron
+#elif (TARGET_OS_MAC && ! (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR))
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
 		NSString *saveDirectory = [basePath stringByAppendingPathComponent:appName];

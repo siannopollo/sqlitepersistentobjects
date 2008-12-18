@@ -22,7 +22,9 @@
 #import "NSObject-SQLitePersistence.h"
 #import "NSString-UppercaseFirst.h"
 #import "NSString-NumberStuff.h"
-
+#ifdef TARGET_OS_COCOTRON
+	#import <objc/objc-class.h>
+#endif
 
 id findByMethodImp(id self, SEL _cmd, id value)
 {
@@ -470,6 +472,14 @@ NSMutableDictionary *objectMap;
 	sqlite3_finalize(statement);
 	return ret;
 }
+
+#ifdef TARGET_OS_COCOTRON
++ (NSArray *)getPropertiesList
+{
+	return [NSArray array];
+}
+#endif
+
 +(NSDictionary *)propertiesWithEncodedTypes
 {
 	// Recurse up the classes, but stop at NSObject. Each class only reports its own properties, not those inherited from its superclass
@@ -482,13 +492,18 @@ NSMutableDictionary *objectMap;
 	
 	unsigned int outCount;
 	
-	
+#ifndef TARGET_OS_COCOTRON
 	objc_property_t *propList = class_copyPropertyList([self class], &outCount);
+#else
+	NSArray *propList = [[self class] getPropertiesList];
+	outCount = [propList count];
+#endif
 	int i;
 	
 	// Loop through properties and add declarations for the create
 	for (i=0; i < outCount; i++)
 	{
+#ifndef TARGET_OS_COCOTRON
 		objc_property_t * oneProp = propList + i;
 		NSString *propName = [NSString stringWithUTF8String:property_getName(*oneProp)];
 		NSString *attrs = [NSString stringWithUTF8String: property_getAttributes(*oneProp)];
@@ -501,6 +516,12 @@ NSMutableDictionary *objectMap;
 				[theProps setObject:propType forKey:propName];
 			}
 		}
+#else
+		NSArray *oneProp = [propList objectAtIndex:i];
+		NSString *propName = [oneProp objectAtIndex:0];
+		NSString *attrs = [oneProp objectAtIndex:1];
+		[theProps setObject:attrs forKey:propName];
+#endif
 	}
 	//	[encodedTypesByClass setValue:theProps forKey:[self className]];
 	return theProps;	
@@ -831,8 +852,32 @@ NSMutableDictionary *objectMap;
 			// anywhere easy to find for a dope like me), but if you want to add a class method
 			// to a class, you have to get the metaclass object and add the clas to that. If you
 			// add the method
-			Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-			return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@")) ? YES : [super resolveClassMethod:theMethod];
+			
+			if(class_getClassMethod([self class], newMethodSelector) != NULL) {
+				return [super resolveClassMethod:theMethod];
+			} else {
+				BOOL isNewMethod = YES;
+				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+#ifdef TARGET_OS_COCOTRON
+				
+				struct objc_method *newMethod = calloc(sizeof(struct objc_method), 1);
+				struct objc_method_list *methodList = calloc(sizeof(struct objc_method_list)+sizeof(struct objc_method), 1);  
+
+				newMethod->method_name = newMethodSelector;
+				newMethod->method_types = "@@:@";
+				newMethod->method_imp = (IMP) findByMethodImp;
+
+				methodList->method_next = NULL;
+				methodList->method_count = 1;
+				memcpy(methodList->method_list, newMethod, sizeof(struct objc_method));
+				free(newMethod);
+				class_addMethods(selfMetaClass, methodList);
+#else
+				isNewMethod = class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@");
+#endif
+				assert(isNewMethod);
+				return YES;
+			}
 		}
 		else
 			return [super resolveClassMethod:theMethod];
