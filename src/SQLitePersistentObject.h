@@ -33,15 +33,13 @@
 #define isNSDictionaryType(x) ([x isEqualToString:@"NSDictionary"] || [x isEqualToString:@"NSMutableDictionary"])
 #define isNSSetType(x) ([x isEqualToString:@"NSSet"] || [x isEqualToString:@"NSMutableSet"])
 
-#ifdef TARGET_OS_COCOTRON
-	#define DECLARE_PROPERTIES(...) + (NSArray *)getPropertiesList \
-		{ \
-			return [NSArray arrayWithObjects: \
-			__VA_ARGS__ \
-			, nil]; \
-		}
-	#define DECLARE_PROPERTY(n,t) [NSArray arrayWithObjects:n, t, nil]
-#endif
+#define DECLARE_PROPERTIES(...) + (NSArray *)getPropertiesList \
+	{ \
+		return [NSArray arrayWithObjects: \
+		__VA_ARGS__ \
+		, nil]; \
+	}
+#define DECLARE_PROPERTY(n,t) [NSArray arrayWithObjects:n, t, nil]
 
 /*! 
  Any class that subclasses this class can have their properties automatically persisted into a sqlite database. There are some limits - currently certain property types aren't supported like void *, char *, structs and unions. Anything that doesn't work correctly with Key Value Coding will not work with this. Ordinary scalars (ints, floats, etc) will be converted to NSNumber, as will BOOL.
