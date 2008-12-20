@@ -60,6 +60,18 @@ void show_objects(Class cls)
 	}
 }
 
+void show_related(Class pobj, Class cobj)
+{
+	LOG(@"* Showing %@ objects related to %@", cobj, pobj);
+	NSArray *pp = [pobj allObjects];
+	for(SQLitePersistentObject *p in pp) {
+		LOG(@"\t%@", p);
+		for(SQLitePersistentObject *c in [p findRelated:cobj]) {
+			LOG(@"\t\t%@", c);
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -70,6 +82,7 @@ int main(int argc, char *argv[])
 	show_table(@"post");
 	show_table(@"post_comment");
 	show_objects([Post class]);
+	show_related([Post class], [PostComment class]);
 	
 	[pool drain];
 	return 0;
