@@ -70,9 +70,9 @@
 /*!
  Find related objects
  */
--(NSArray *)findRelated:(SQLitePersistentObject *)cls forProperty:(NSString *)prop filter:(NSString *)filter;
--(NSArray *)findRelated:(SQLitePersistentObject *)cls filter:(NSString *)filter;
--(NSArray *)findRelated:(SQLitePersistentObject *)cls;
+-(NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter;
+-(NSArray *)findRelated:(Class)cls filter:(NSString *)filter;
+-(NSArray *)findRelated:(Class)cls;
 
 /*!
  This method should be overridden by subclasses in order to specify performance indices on the underyling table. 
