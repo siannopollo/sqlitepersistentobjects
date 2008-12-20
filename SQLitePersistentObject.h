@@ -68,6 +68,13 @@
 +(NSArray *)allObjects;
 
 /*!
+ Find related objects
+ */
+-(NSArray *)findRelated:(SQLitePersistentObject *)cls forProperty:(NSString *)prop filter:(NSString *)filter;
+-(NSArray *)findRelated:(SQLitePersistentObject *)cls filter:(NSString *)filter;
+-(NSArray *)findRelated:(SQLitePersistentObject *)cls;
+
+/*!
  This method should be overridden by subclasses in order to specify performance indices on the underyling table. 
  @result Should return an array of arrays. Each array represents one index, and should contain a list of the properties that the index should be created on, in the order the database should use to create it. This is case sensitive, and the values must match the value of property names
  */
