@@ -832,6 +832,25 @@ NSMutableDictionary *objectMap;
 		}
 	}
 }
+
+- (NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter
+{
+	NSString *q = [NSString stringWithFormat:@"WHERE %@ = \"%@\"", prop, [self memoryMapKey]];
+	if(filter)
+		q = [q stringByAppendingFormat:@" AND %@", filter];
+	return [cls findByCriteria:q];
+}
+
+- (NSArray *)findRelated:(Class)cls filter:(NSString *)filter
+{
+	return [self findRelated:cls forProperty:[[self class] tableName] filter:filter];	
+}
+
+- (NSArray *)findRelated:(Class)cls
+{
+	return [self findRelated:cls forProperty:[[self class] tableName] filter:nil];
+}
+
 #pragma mark -
 #pragma mark NSObject Overrides 
 
