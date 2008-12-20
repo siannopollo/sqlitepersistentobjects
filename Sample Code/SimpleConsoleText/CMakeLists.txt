@@ -26,6 +26,7 @@ SET(ConsoleTest_sources
 	main.m
 	Post.m
 	PostCategory.m
+	PostComment.m
 )
 
 IF(NOT APPLE)
