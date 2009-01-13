@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E4167C0F1CA4970089B425 /* NSString-NumberStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E4167B0F1CA4970089B425 /* NSString-NumberStuff.m */; };
 		1D3623260D0F684500981E51 /* SQLitePersistenceTestAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* SQLitePersistenceTestAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		00E4167B0F1CA4970089B425 /* NSString-NumberStuff.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString-NumberStuff.m"; path = "../../src/NSString-NumberStuff.m"; sourceTree = SOURCE_ROOT; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* SQLitePersistenceTestAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLitePersistenceTestAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* SQLitePersistenceTestAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLitePersistenceTestAppDelegate.m; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				1F0ADB800EBB5A6E00355F7A /* NSString-SQLitePersistence.m */,
 				1F0ADB810EBB5A6E00355F7A /* NSString-UppercaseFirst.h */,
 				1F0ADB820EBB5A6E00355F7A /* NSString-UppercaseFirst.m */,
+				00E4167B0F1CA4970089B425 /* NSString-NumberStuff.m */,
 				1F0ADB830EBB5A6E00355F7A /* SQLiteInstanceManager.h */,
 				1F0ADB840EBB5A6E00355F7A /* SQLiteInstanceManager.m */,
 				1F0ADB850EBB5A6E00355F7A /* SQLitePersistentObject.h */,
@@ -254,6 +257,7 @@
 				1F0ADB910EBB5A6E00355F7A /* SQLiteInstanceManager.m in Sources */,
 				1F0ADB920EBB5A6E00355F7A /* SQLitePersistentObject.m in Sources */,
 				1F0ADB930EBB5A6E00355F7A /* UIImage-SQLitePersistence.m in Sources */,
+				00E4167C0F1CA4970089B425 /* NSString-NumberStuff.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

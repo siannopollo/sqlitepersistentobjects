@@ -14,7 +14,10 @@
 	NSDate		*birthDate;
 	UIImage		*image;
 	NSInteger	favoriteInt;
+	char		sex;
 }
+
+@property (nonatomic) char sex;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSDate *birthDate;
 @property (nonatomic, retain) UIImage *image;

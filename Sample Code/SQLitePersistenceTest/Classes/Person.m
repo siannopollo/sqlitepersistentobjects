@@ -14,6 +14,7 @@
 @synthesize birthDate;
 @synthesize image;
 @synthesize favoriteInt;
+@synthesize sex;
 
 - (void)dealloc
 {
