@@ -609,7 +609,7 @@ NSMutableDictionary *objectMap;
 				
 			{
 				NSString *theString = [theProperty stringValue];
-				sqlite3_bind_text(stmt, colIndex, [theString UTF8String], -1, NULL);
+				sqlite3_bind_text(stmt, colIndex++, [theString UTF8String], -1, NULL);
 			}
 			else if ([propType hasPrefix:@"@"] ) // Object
 			{
