@@ -66,4 +66,20 @@
 	}
 	return YES;
 }
++ (id)formattedCurrencyStringWithValue:(float)inValue
+{
+
+		NSNumberFormatter *numberFormatter;
+		NSString *ret;
+		numberFormatter = [[NSNumberFormatter alloc] init];
+		[numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+		[numberFormatter setCurrencyCode:[[NSLocale currentLocale] objectForKey:NSLocaleCurrencyCode]];
+//		[numberFormatter setNegativePrefix:[[NSLocale currentLocale] negativePrefix]];
+		
+	
+		ret = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:inValue]];
+		[numberFormatter release];
+		return ret;
+
+}
 @end

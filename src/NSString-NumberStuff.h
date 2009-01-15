@@ -10,4 +10,5 @@
 - (BOOL)holdsFloatingPointValue;
 - (BOOL)holdsFloatingPointValueForLocale:(NSLocale *)locale;
 - (BOOL)holdsIntegerValue;
++ (id)formattedCurrencyStringWithValue:(float)inValue;
 @end
