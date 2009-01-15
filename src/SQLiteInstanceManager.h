@@ -15,7 +15,7 @@
 // place comments in to identify your changes.
 //
 // For information on how to use these classes, take a look at the 
-// included eadme.txt file
+// included Readme.txt file
 // ----------------------------------------------------------------------
 #if (TARGET_OS_MAC && ! (TARGET_OS_EMBEDDED || TARGET_OS_ASPEN || TARGET_OS_IPHONE))	
 #import <Foundation/Foundation.h>

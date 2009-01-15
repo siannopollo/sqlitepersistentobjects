@@ -234,6 +234,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -282,8 +284,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>19</integer>
-									<integer>2</integer>
+									<integer>30</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -310,7 +311,7 @@
 							<real>308</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>480 344 1255 829 0 0 1920 1178 </string>
+						<string>566 310 1255 829 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -321,14 +322,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>SQLiteInstanceManager.h</string>
+								<string>MainListController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -336,24 +335,16 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>SQLiteInstanceManager.h</string>
-										<key>_historyCapacity</key>
-										<integer>0</integer>
-										<key>bookmark</key>
-										<string>1FD867D50EFAAADB00911736</string>
+										<string>MainListController.m</string>
 										<key>history</key>
 										<array>
 											<string>1F9E2A3D0EAD8219002D26B8</string>
-											<string>1F83C4CF0EAD9FC5001950CA</string>
-											<string>1F83C4D00EAD9FC5001950CA</string>
 											<string>1F83C4D10EAD9FC5001950CA</string>
 											<string>1F83C4D40EAD9FC5001950CA</string>
-											<string>1F83C9750EAFA657001950CA</string>
 											<string>1FD8678B0EFAA5FF00911736</string>
 											<string>1FD8678C0EFAA5FF00911736</string>
 											<string>1FD867B80EFAA79E00911736</string>
 											<string>1FD867D20EFAAADB00911736</string>
-											<string>1FD867D30EFAAADB00911736</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -368,7 +359,6 @@
 											<string>1F0ADBC90EBB5E6000355F7A</string>
 											<string>1F0ADBD00EBB5EA200355F7A</string>
 											<string>1FD8678D0EFAA5FF00911736</string>
-											<string>1FD867D40EFAAADB00911736</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -382,7 +372,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {903, 610}}</string>
 								<key>RubberWindowFrame</key>
-								<string>480 344 1255 829 0 0 1920 1178 </string>
+								<string>566 310 1255 829 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -402,7 +392,7 @@
 								<key>Frame</key>
 								<string>{{0, 615}, {903, 173}}</string>
 								<key>RubberWindowFrame</key>
-								<string>480 344 1255 829 0 0 1920 1178 </string>
+								<string>566 310 1255 829 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -426,9 +416,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>1FD867D60EFAAADB00911736</string>
+				<string>1F22D8600F1FD83500789128</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>1FD867D70EFAAADB00911736</string>
+				<string>1F22D8610F1FD83500789128</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -562,11 +552,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1F9E28900EAD6A6F002D26B8</string>
 		<string>/Users/jeff/dev/sqlitepersistentobjects/Sample Code/SQLitePersistenceTest/SQLitePersistenceTest.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>480 344 1255 829 0 0 1920 1178 </string>
+	<string>566 310 1255 829 0 0 1920 1178 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
