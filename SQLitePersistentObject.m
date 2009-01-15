@@ -13,7 +13,7 @@
 // place comments in to identify your changes.
 //
 // For information on how to use these classes, take a look at the 
-// included eadme.txt file
+// included Readme.txt file
 // ----------------------------------------------------------------------
 
 #import "SQLitePersistentObject.h"
@@ -1040,7 +1040,7 @@ NSMutableDictionary *objectMap;
 				// SQLitePersistentObject and doesn't conform to NSCoding then the object won't get persisted.
 				if (isNSArrayType(className))
 				{
-					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk, array_index INTEGER, fk INTEGER, fk_table_name TEXT, object_data TEXT, object_class BLOB, PRIMARY KEY (parent_pk, array_index))", [self tableName], [propName stringAsSQLColumnName]];
+					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk, array_index INTEGER, fk INTEGER, fk_table_name TEXT, object_data TEXT, object_class BLOB, PRIMARY KEY (parent_pk, array_index))", [self tableName], propName];
 					char *errmsg = NULL;
 					if (sqlite3_exec (database, [xRefQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
 						NSLog(@"Error Message: %s", errmsg);
@@ -1048,7 +1048,7 @@ NSMutableDictionary *objectMap;
 				}
 				else if (isNSDictionaryType(className))
 				{
-					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk integer, dictionary_key TEXT, fk INTEGER, fk_table_name TEXT, object_data BLOB, object_class TEXT, PRIMARY KEY (parent_pk, dictionary_key))", [self tableName], [propName stringAsSQLColumnName]];
+					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk integer, dictionary_key TEXT, fk INTEGER, fk_table_name TEXT, object_data BLOB, object_class TEXT, PRIMARY KEY (parent_pk, dictionary_key))", [self tableName], propName];
 					char *errmsg = NULL;
 					if (sqlite3_exec (database, [xRefQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
 						NSLog(@"Error Message: %s", errmsg);
@@ -1056,7 +1056,7 @@ NSMutableDictionary *objectMap;
 				}
 				else if (isNSSetType(className))
 				{
-					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk INTEGER, fk INTEGER, fk_table_name TEXT, object_data BLOB, object_class TEXT)", [self tableName], [propName stringAsSQLColumnName]];
+					NSString *xRefQuery = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@_%@ (parent_pk INTEGER, fk INTEGER, fk_table_name TEXT, object_data BLOB, object_class TEXT)", [self tableName], propName];
 					char *errmsg = NULL;
 					if (sqlite3_exec (database, [xRefQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
 						NSLog(@"Error Message: %s", errmsg);

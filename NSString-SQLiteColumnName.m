@@ -15,7 +15,7 @@
 // place comments in to identify your changes.
 //
 // For information on how to use these classes, take a look at the 
-// included eadme.txt file
+// included Readme.txt file
 // ----------------------------------------------------------------------
 
 #import "NSString-SQLiteColumnName.h"
@@ -24,6 +24,7 @@
 @implementation NSString(SQLiteColumnName)
 - (NSString *)stringAsSQLColumnName
 {
+	
 	NSMutableString *ret = [NSMutableString string];
 	for (int i=0; i < [self length]; i++)
 	{

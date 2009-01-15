@@ -13,7 +13,7 @@
 // place comments in to identify your changes.
 //
 // For information on how to use these classes, take a look at the 
-// included eadme.txt file
+// included Readme.txt file
 // ----------------------------------------------------------------------
 #define kSQLiteColumnTypeText		@"TEXT"
 #define kSQLIteColumnTypeInteger	@"INTEGER"
