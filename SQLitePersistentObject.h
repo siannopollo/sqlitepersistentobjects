@@ -59,6 +59,8 @@
  */
 + (NSString *)tableName;
 
++ (void)clearCache;
+
 /*!
  Find by criteria lets you specify the SQL conditions that will be used. The string passed in should start with the word WHERE. So, to search for a value with a pk value of 1, you would pass in @"WHERE pk = 1". When comparing to strings, the string comparison must be in single-quotes like this @"WHERE name = 'smith'".
  */
@@ -143,6 +145,8 @@
  Returns this objects primary key
  */
 -(int)pk;
+
+-(BOOL) areAllPropertiesEqual:(SQLitePersistentObject*)object;
 
 /*! 
  This method will return a dictionary using the value for one specified field as the key and the pk stored as an NSNumber as the object. This is designed for letting you retrieve a list for display without having to load all objects into memory.
