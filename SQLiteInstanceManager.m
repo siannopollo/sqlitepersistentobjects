@@ -19,6 +19,7 @@
 // ----------------------------------------------------------------------
 
 #import "SQLiteInstanceManager.h"
+#import "SQLitePersistentObject.h"
 
 static SQLiteInstanceManager *sharedSQLiteManager = nil;
 
@@ -116,6 +117,16 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA cache_size=%d", mode];
 	[self executeUpdateSQL:updateSQL];
+}
+- (void)deleteDatabase
+{
+	NSString* path = [self databaseFilepath];
+	NSFileManager* fm = [NSFileManager defaultManager];
+	[fm removeFileAtPath:path handler:nil];
+	
+	static BOOL first = YES;
+	database = NULL;
+	[SQLitePersistentObject clearCache];
 }
 - (void)vacuum
 {
