@@ -73,6 +73,7 @@ id findByMethodImp(id self, SEL _cmd, id value)
 @end
 
 NSMutableDictionary *objectMap;
+NSMutableArray *checkedTables;
 
 @implementation SQLitePersistentObject
 #if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
@@ -87,6 +88,16 @@ NSMutableDictionary *objectMap;
 #endif
 #pragma mark -
 #pragma mark Public Class Methods
+
++ (void)clearCache
+{
+	if(objectMap != nil)
+		[objectMap removeAllObjects];
+	
+	if(checkedTables != nil)
+		[checkedTables removeAllObjects];
+	
+}
 
 +(NSArray *)indices
 {
@@ -239,13 +250,17 @@ NSMutableDictionary *objectMap;
 						
 						if ([propClass isSubclassOfClass:[SQLitePersistentObject class]])
 						{
-							NSString *objMemoryMapKey = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, i)];
-							NSArray *parts = [objMemoryMapKey componentsSeparatedByString:@"-"];
-							NSString *classString = [parts objectAtIndex:0];
-							int fk = [[parts objectAtIndex:1] intValue];
-							Class propClass = objc_lookUpClass([classString UTF8String]);
-							id fkObj = [propClass findByPK:fk];
-							[oneItem setValue:fkObj forKey:propName];
+							const char* sqlKey = (const char *)sqlite3_column_text(statement, i);
+							if(sqlKey != nil)
+							{
+								NSString *objMemoryMapKey = [NSString stringWithUTF8String:sqlKey];
+								NSArray *parts = [objMemoryMapKey componentsSeparatedByString:@"-"];
+								NSString *classString = [parts objectAtIndex:0];
+								int fk = [[parts objectAtIndex:1] intValue];
+								Class propClass = objc_lookUpClass([classString UTF8String]);
+								id fkObj = [propClass findByPK:fk];
+								[oneItem setValue:fkObj forKey:propName];
+							}
 						}
 						else if ([propClass shouldBeStoredInBlob])
 						{
@@ -851,6 +866,70 @@ NSMutableDictionary *objectMap;
 	return [self findRelated:cls forProperty:[[self class] tableName] filter:nil];
 }
 
+NSMutableArray* recursionCheck;
+
+-(BOOL) areAllPropertiesEqual:(SQLitePersistentObject*)object
+{
+	NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
+	BOOL returnValue = TRUE;
+
+	if( ![[object class] isSubclassOfClass:[self class]] )
+		return FALSE;
+	
+	if(recursionCheck == nil )
+		recursionCheck = [[NSMutableArray alloc] init];
+	
+	[recursionCheck addObject:self];
+	
+	for (NSString *prop in [theProps allKeys])
+	{
+		id myProperty = [self valueForKey:prop];
+		id theirProperty = [object valueForKey:prop];
+		
+		if(myProperty == nil || theirProperty == nil)
+			continue;
+			
+		if(![myProperty isEqual:theirProperty])
+		{
+			//if the numbers are both floats, allow some margin of error
+			if( [[myProperty class] isSubclassOfClass: [NSNumber class]] )
+			{
+				float mine = [myProperty floatValue];
+				float theirs = [theirProperty floatValue];
+				if(fabs(mine-theirs) < 0.001)
+					continue;
+			}
+			
+			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
+			[desc appendString:@"\nProperty was not equal:"];
+			[desc appendString:prop];
+			[desc appendString:@" = "];
+			[desc appendString:[myProperty description]];
+			[desc appendString:@" was not equal to "];
+			[desc appendString:[theirProperty description]];
+			NSLog(desc);
+			[recursionCheck removeObject:self];
+			returnValue = FALSE;
+		}
+		
+		if(	[[myProperty class] isSubclassOfClass:[SQLitePersistentObject class]] &&
+			[[theirProperty class] isSubclassOfClass:[SQLitePersistentObject class]] &&
+			![recursionCheck containsObject:theirProperty] &&
+			![recursionCheck containsObject:myProperty] )
+		{
+			if( ![myProperty areAllPropertiesEqual:theirProperty] )
+			{
+				[recursionCheck removeObject:self];
+				return FALSE;
+			}
+		}
+			
+	}
+	
+	[recursionCheck removeObject:self];
+	return returnValue;
+}
+
 #pragma mark -
 #pragma mark NSObject Overrides 
 
@@ -981,16 +1060,16 @@ NSMutableDictionary *objectMap;
 	[tableNamesByClass setObject:ret forKey:[self className]];
 	return ret;
 }
+
 +(void)tableCheck
 {
-	static NSMutableArray *checked = nil;
 	
-	if (checked == nil)
-		checked = [[NSMutableArray alloc] init];
+	if (checkedTables == nil)
+		checkedTables = [[NSMutableArray alloc] init];
 	
-	if (![checked containsObject:[self className]])
+	if (![checkedTables containsObject:[self className]])
 	{
-		[checked addObject:[self className]];
+		[checkedTables addObject:[self className]];
 		
 		// Do not use static variables to cache information in this method, as it will be
 		// shared across subclasses. Do caching in instance methods.
