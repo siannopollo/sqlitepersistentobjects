@@ -1,0 +1,173 @@
+// !$*UTF8*$!
+{
+	00A623790F1F367E00696BD9 /* UIUnitTestingHarness */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = UIUnitTestingHarness;
+		sourceDirectories = (
+		);
+	};
+	00A623930F1F36BE00696BD9 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F48FE26E0D198CAD009257D2 /* UnitTest-Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/aa/SQLitePersistentObjects/sqlitepersistentobjects/Tests/google-toolbox-for-mac-1-5-1/UnitTest-Info.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	00A623940F1F36BE00696BD9 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F440EDB70DFECC4B0003E81F /* BuildingAndUsing.txt */;
+	};
+	00A623950F1F36BE00696BD9 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = F48FE26E0D198CAD009257D2 /* UnitTest-Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+		);
+		name = "/Users/aa/SQLitePersistentObjects/sqlitepersistentobjects/Tests/google-toolbox-for-mac-1-5-1/UnitTest-Info.plist";
+		rLen = 0;
+		rLoc = 2147483647;
+	};
+	00A623960F1F36BE00696BD9 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = F440EDB70DFECC4B0003E81F /* BuildingAndUsing.txt */;
+		name = "BuildingAndUsing.txt: 4";
+		rLen = 0;
+		rLoc = 94;
+		rType = 0;
+		vrLen = 784;
+		vrLoc = 0;
+	};
+	00A6239A0F1F36BE00696BD9 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	00A6239B0F1F36BE00696BD9 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	0867D690FE84028FC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = "TigerOrLater-Debug";
+		activeExecutable = 00A623790F1F367E00696BD9 /* UIUnitTestingHarness */;
+		activeTarget = F42E086C0D199A5B00D5DDE0 /* GTM */;
+		codeSenseManager = 00A6239B0F1F36BE00696BD9 /* Code sense */;
+		executables = (
+			00A623790F1F367E00696BD9 /* UIUnitTestingHarness */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					711,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					671,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 253703806;
+			PBXWorkspaceStateSaveDate = 253703806;
+		};
+		perUserProjectItems = {
+			00A623930F1F36BE00696BD9 /* PlistBookmark */ = 00A623930F1F36BE00696BD9 /* PlistBookmark */;
+			00A623940F1F36BE00696BD9 /* PBXBookmark */ = 00A623940F1F36BE00696BD9 /* PBXBookmark */;
+			00A623950F1F36BE00696BD9 /* PlistBookmark */ = 00A623950F1F36BE00696BD9 /* PlistBookmark */;
+			00A623960F1F36BE00696BD9 /* PBXTextBookmark */ = 00A623960F1F36BE00696BD9 /* PBXTextBookmark */;
+		};
+		sourceControlManager = 00A6239A0F1F36BE00696BD9 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8B45A0270DA4696C001148C5 /* UnitTest - UnitTesting */ = {
+		activeExec = 0;
+	};
+	8B45A2890DA49B99001148C5 /* UIUnitTestingHarness */ = {
+		activeExec = 0;
+		executables = (
+			00A623790F1F367E00696BD9 /* UIUnitTestingHarness */,
+		);
+	};
+	F41A6EE00E02DB4F00788A6C /* Build GTM All SDKs */ = {
+		activeExec = 0;
+	};
+	F41A6EF80E02DCFC00788A6C /* All UnitTests All SDKs */ = {
+		activeExec = 0;
+	};
+	F42E08110D19987200D5DDE0 /* UnitTest - Foundation */ = {
+		activeExec = 0;
+	};
+	F42E086C0D199A5B00D5DDE0 /* GTM */ = {
+		activeExec = 0;
+	};
+	F440EDB70DFECC4B0003E81F /* BuildingAndUsing.txt */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {889, 488}}";
+			sepNavSelRange = "{94, 0}";
+			sepNavVisRange = "{0, 784}";
+		};
+	};
+	F472042B0D33BEAF00E9F378 /* All UnitTests */ = {
+		activeExec = 0;
+	};
+	F48FE2630D198C1E009257D2 /* UnitTest - AppKit */ = {
+		activeExec = 0;
+	};
+}
