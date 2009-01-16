@@ -61,5 +61,6 @@ typedef enum SQLITE3LockingMode
 - (void)setAutoVacuum:(SQLITE3AutoVacuum)mode;
 - (void)setCacheSize:(NSUInteger)pages;
 - (void)setLockingMode:(SQLITE3LockingMode)mode;
+- (void)deleteDatabase;
 - (void)vacuum;
 @end
