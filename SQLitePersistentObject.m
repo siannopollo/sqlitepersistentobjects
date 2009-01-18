@@ -22,11 +22,12 @@
 #import "NSObject-SQLitePersistence.h"
 #import "NSString-UppercaseFirst.h"
 #import "NSString-NumberStuff.h"
+#import "NSObject-ClassName.h"
 #ifdef TARGET_OS_COCOTRON
 	#import <objc/objc-class.h>
 #endif
 
-id findByMethodImp(id self, SEL _cmd, id value)
+static id findByMethodImp(id self, SEL _cmd, id value)
 {
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
 	
@@ -76,16 +77,6 @@ NSMutableDictionary *objectMap;
 NSMutableArray *checkedTables;
 
 @implementation SQLitePersistentObject
-#if (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
-- (NSString *)className
-{
-	return [NSString stringWithUTF8String:class_getName([self class])];
-}
-+ (NSString *)className
-{
-	return [NSString stringWithUTF8String:class_getName(self)];
-}
-#endif
 #pragma mark -
 #pragma mark Public Class Methods
 
@@ -466,14 +457,14 @@ NSMutableArray *checkedTables;
 	
 	return ret;
 }
+// This functionality has changed. Now the keys are the PK values, and the values are the values from the specified field. The old version wouldn't allow duplicates because it was using the name as the key, which rather eliminated the usefulness of the method.
 +(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp 
 {
 	NSMutableDictionary *ret = [NSMutableDictionary dictionary];
 	[[self class] tableCheck];
 	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 	
-	NSString *query = [NSString stringWithFormat:@"SELECT pk, %@ FROM %@ ORDER BY %@", [theProp stringAsSQLColumnName], [[self class] tableName],  [theProp stringAsSQLColumnName]];
-
+	NSString *query = [NSString stringWithFormat:@"SELECT pk, %@ FROM %@ ORDER BY %@, pk", [theProp stringAsSQLColumnName], [[self class] tableName],  [theProp stringAsSQLColumnName]];
 	sqlite3_stmt *statement;
 	if (sqlite3_prepare_v2( database, [query UTF8String], -1, &statement, NULL) == SQLITE_OK)
 	{
@@ -481,7 +472,7 @@ NSMutableArray *checkedTables;
 		{
 			NSNumber *thePK = [NSNumber numberWithInt:sqlite3_column_int(statement, 0)];
 			NSString *theName = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
-			[ret setObject:thePK forKey:theName];
+			[ret setObject:theName forKey:[thePK stringValue]];
 		}
 	}
 	sqlite3_finalize(statement);
@@ -989,7 +980,7 @@ NSMutableArray* recursionCheck;
 }
 -(id)init
 {
-	if (self=[super init])
+	if ((self=[super init]))
 	{
 		pk = -1;
 	}

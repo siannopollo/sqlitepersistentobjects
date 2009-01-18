@@ -124,7 +124,6 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 	NSFileManager* fm = [NSFileManager defaultManager];
 	[fm removeFileAtPath:path handler:nil];
 	
-	static BOOL first = YES;
 	database = NULL;
 	[SQLitePersistentObject clearCache];
 }
@@ -164,7 +163,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		}
 #if (TARGET_OS_COCOTRON)
 		NSString *saveDirectory = @"./"; // TODO: default path is undefined on coctron
-#elif (TARGET_OS_MAC && ! (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR))
+#elif (TARGET_OS_MAC && ! TARGET_OS_IPHONE)
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
 		NSString *saveDirectory = [basePath stringByAppendingPathComponent:appName];
