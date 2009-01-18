@@ -824,7 +824,7 @@ NSMutableArray *checkedTables;
 			NSString *colType = [theProps valueForKey:prop];
 			if ([colType hasPrefix:@"@"])
 			{
-				NSString *className = [prop substringWithRange:NSMakeRange(2, [prop length]-3)];
+				NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
 				if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
 				{
 					if (cascade)
@@ -899,6 +899,11 @@ NSMutableArray* recursionCheck;
 				if(fabs(mine-theirs) < 0.001)
 					continue;
 			}
+			
+			if( [[myProperty class] isSubclassOfClass: [NSDate class]] &&
+				 fabs([myProperty timeIntervalSinceDate: theirProperty]) < 0.001
+			)
+				continue;
 			
 			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
 			[desc appendString:@"\nProperty was not equal:"];
