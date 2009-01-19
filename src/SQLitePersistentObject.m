@@ -34,7 +34,7 @@ static id findByMethodImp(id self, SEL _cmd, id value)
 	NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
 	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
 	
-	NSMutableString *queryCondition = [NSMutableString stringWithFormat:@"WHERE %@ = ", [property stringAsSQLColumnName]];
+	NSMutableString *queryCondition = [NSMutableString stringWithFormat:@"WHERE %@ like ", [property stringAsSQLColumnName]];
 	if (![value isKindOfClass:[NSNumber class]])
 		[queryCondition appendString:@"'"];
 	
@@ -946,13 +946,17 @@ NSMutableArray* recursionCheck;
 			// anywhere easy to find for a dope like me), but if you want to add a class method
 			// to a class, you have to get the metaclass object and add the clas to that. If you
 			// add the method
-			
+#ifndef TARGET_OS_COCOTRON
+			Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+			NSLog(@"classname: %@", [self className]);
+			return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@")) ? YES : [super resolveClassMethod:theMethod];
+#else			
 			if(class_getClassMethod([self class], newMethodSelector) != NULL) {
 				return [super resolveClassMethod:theMethod];
 			} else {
 				BOOL isNewMethod = YES;
 				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-#ifdef TARGET_OS_COCOTRON
+
 				
 				struct objc_method *newMethod = calloc(sizeof(struct objc_method), 1);
 				struct objc_method_list *methodList = calloc(sizeof(struct objc_method_list)+sizeof(struct objc_method), 1);  
@@ -966,12 +970,11 @@ NSMutableArray* recursionCheck;
 				memcpy(methodList->method_list, newMethod, sizeof(struct objc_method));
 				free(newMethod);
 				class_addMethods(selfMetaClass, methodList);
-#else
-				isNewMethod = class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@");
-#endif
+
 				assert(isNewMethod);
 				return YES;
 			}
+#endif
 		}
 		else
 			return [super resolveClassMethod:theMethod];
