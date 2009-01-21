@@ -86,6 +86,7 @@
  Deletes this object's corresponding row from the database table. This version does NOT cascade to child objects in other tables.
  */
 -(void)deleteObject;
++(void)deleteObject:(NSInteger)pk cascade:(BOOL)cascade;
 
 /*!
  Deletes this object's corresponding row from the database table.
