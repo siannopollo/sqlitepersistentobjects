@@ -138,6 +138,12 @@ NSMutableArray *checkedTables;
 		tableChecked = YES;
 		[self tableCheck];
 		
+		//Unregister the object, to prevent it from being returned later if the PK is ever reused.
+		//We have to do this before the delete while we can still retrieve the object.
+		SQLitePersistentObject* objToDelete = [self findByPK:inPk];
+		[self unregisterObject:objToDelete];
+		[objToDelete release];//release to cancel out the retain when it was registered.
+		
 		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self tableName], inPk];
 		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 		char *errmsg = NULL;
