@@ -122,7 +122,12 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	NSString* path = [self databaseFilepath];
 	NSFileManager* fm = [NSFileManager defaultManager];
+#if (TARGET_OS_IPHONE)
+	NSError* errors;
+	[fm removeItemAtPath:path error:&errors];
+#else
 	[fm removeFileAtPath:path handler:nil];
+#endif
 	
 	database = NULL;
 	[SQLitePersistentObject clearCache];
