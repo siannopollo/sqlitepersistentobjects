@@ -154,6 +154,11 @@
  */
 +(NSMutableDictionary *)sortedFieldValuesWithKeysForProperty:(NSString *)theProp;
 
+/*!
+ This method will return paired mutable arrays (packed into an array) for each of the specified fields in the theProps array. The number of returned arrays will always be one greater than the number of values in theProps (assuming all of the passed values are valid fields), as the first mutable array will contain the primary key values for the object; the remainder of the arrays will correspond to the props in the same order they were passed in. The paired arrays will containe information at the same index about the same object. The values will be returned as formatted strings, as this method is intended for display in an iPhone table
+ */
++(NSArray *)pairedArraysForProperties:(NSArray *)theProps;
+
 + (NSInteger)count; 
 + (NSInteger)countByCriteria:(NSString *)criteriaString;
 
