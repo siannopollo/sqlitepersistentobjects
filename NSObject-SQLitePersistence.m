@@ -19,8 +19,12 @@
 // ----------------------------------------------------------------------
 
 #import "NSObject-SQLitePersistence.h"
+<<<<<<< .mine
+#import "NSObject-ClassName.h"
+=======
 #import "NSObject-ClassName.h"
 
+>>>>>>> .r57
 @implementation NSObject(SQLitePersistence)
 
 + (BOOL)canBeStoredInSQLite;

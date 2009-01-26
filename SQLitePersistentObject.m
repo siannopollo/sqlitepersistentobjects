@@ -24,7 +24,7 @@
 #import "NSString-NumberStuff.h"
 #import "NSObject-ClassName.h"
 #ifdef TARGET_OS_COCOTRON
-	#import <objc/objc-class.h>
+#import <objc/objc-class.h>
 #endif
 
 static id findByMethodImp(id self, SEL _cmd, id value)
@@ -318,7 +318,7 @@ NSMutableArray *checkedTables;
 							if (NULL != columnText)
 								colData = [propClass objectWithSqlColumnRepresentation:[NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, i)]];
 							
-							 
+							
 							[oneItem setValue:colData forKey:propName];
 						}
 					}
@@ -528,7 +528,50 @@ NSMutableArray *checkedTables;
 	sqlite3_finalize(statement);
 	return ret;
 }
-
++(NSArray *)pairedArraysForProperties:(NSArray *)theProps
+{
+	NSMutableArray *ret = [NSMutableArray array];
+	[[self class] tableCheck];
+	
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	
+	NSMutableString *query = [NSMutableString stringWithString:@"select pk"];
+	
+	for (NSString *oneProp in theProps)
+		[query appendFormat:@", %@", [oneProp stringAsSQLColumnName]];
+	
+	[query appendFormat:@" FROM %@ ORDER BY PK", [[self class] tableName]];
+	
+	for (int i = 0; i <= [theProps count]; i++)
+		[ret addObject:[NSMutableArray array]];
+	
+	sqlite3_stmt *statement;
+	if (sqlite3_prepare_v2( database, [query UTF8String], -1, &statement, NULL) == SQLITE_OK)
+	{
+		while (sqlite3_step(statement) == SQLITE_ROW)
+		{
+			NSNumber *thePK = [NSNumber numberWithInt:sqlite3_column_int(statement, 0)];
+			[[ret objectAtIndex:0] addObject:thePK];
+			
+			for (int i = 1; i <= [theProps count]; i++)
+			{
+				NSMutableArray *fieldArray = [ret objectAtIndex:i];
+				const char *theValueAsString = (const char *)sqlite3_column_text(statement, i);
+				if (theValueAsString)
+				{
+					NSString *theValue = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, i)];
+					[fieldArray addObject:theValue];
+				}
+				else
+					[fieldArray addObject:[NSNull null]];
+					
+			}
+		}
+	}
+	sqlite3_finalize(statement);
+	
+	return ret;
+}
 #ifdef TARGET_OS_COCOTRON
 + (NSArray *)getPropertiesList
 {
@@ -563,13 +606,17 @@ NSMutableArray *checkedTables;
 		objc_property_t * oneProp = propList + i;
 		NSString *propName = [NSString stringWithUTF8String:property_getName(*oneProp)];
 		NSString *attrs = [NSString stringWithUTF8String: property_getAttributes(*oneProp)];
-		NSArray *attrParts = [attrs componentsSeparatedByString:@","];
-		if (attrParts != nil)
+		// Read only attributes are assumed to be derived or calculated
+		if ([[attrs lowercaseString] rangeOfString:@"readonly"].location == NSNotFound)
 		{
-			if ([attrParts count] > 0)
+			NSArray *attrParts = [attrs componentsSeparatedByString:@","];
+			if (attrParts != nil)
 			{
-				NSString *propType = [[attrParts objectAtIndex:0] substringFromIndex:1];
-				[theProps setObject:propType forKey:propName];
+				if ([attrParts count] > 0)
+				{
+					NSString *propType = [[attrParts objectAtIndex:0] substringFromIndex:1];
+					[theProps setObject:propType forKey:propName];
+				}
 			}
 		}
 #else
@@ -579,7 +626,6 @@ NSMutableArray *checkedTables;
 		[theProps setObject:attrs forKey:propName];
 #endif
 	}
-	//	[encodedTypesByClass setValue:theProps forKey:[self className]];
 	return theProps;	
 }
 #pragma mark -
@@ -631,7 +677,8 @@ NSMutableArray *checkedTables;
 	[updateSQL appendFormat:@") VALUES (?%@)", bindSQL];
 	
 	sqlite3_stmt *stmt;
-	if (sqlite3_prepare_v2( database, [updateSQL UTF8String], -1, &stmt, nil) == SQLITE_OK)
+	int result = sqlite3_prepare_v2( database, [updateSQL UTF8String], -1, &stmt, nil);
+	if (result == SQLITE_OK)
 	{
 		int colIndex = 1;
 		sqlite3_bind_int(stmt, colIndex++, pk);
@@ -830,6 +877,8 @@ NSMutableArray *checkedTables;
 			NSLog(@"Error inserting or updating row");
 		sqlite3_finalize(stmt);
 	}
+	else
+		NSLog(@"Error preparing save SQL: %s", sqlite3_errmsg(database));
 	// Can't register in memory map until we have PK, so do that now.
 	if (![[objectMap allKeys] containsObject:[self memoryMapKey]])
 		[[self class] registerObjectInMemory:self];
@@ -846,48 +895,6 @@ NSMutableArray *checkedTables;
 -(void)deleteObjectCascade:(BOOL)cascade
 {
 	[[self class] deleteObject:[self pk] cascade:cascade];
-//	BOOL tableChecked = NO;
-//	if (!tableChecked)
-//	{
-//		tableChecked = YES;
-//		[[self class] tableCheck];
-//		
-//		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [[self class] tableName], pk];
-//		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
-//		char *errmsg = NULL;
-//		if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-//			NSLog(@"Error deleting row in table: %s", errmsg);
-//		sqlite3_free(errmsg);
-//		
-//		NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
-//		
-//		for (NSString *prop in [theProps allKeys])
-//		{
-//			NSString *colType = [theProps valueForKey:prop];
-//			if ([colType hasPrefix:@"@"])
-//			{
-//				NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
-//				if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
-//				{
-//					if (cascade)
-//					{
-//						Class fkClass = objc_lookUpClass([prop UTF8String]);
-//						NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], pk];
-//						// Suppress the error if there was one: it's faster than checking to see if the table exists. 
-//						// It may not if the property was used to store strings or another storage class but never
-//						// a subclass of SQLitePersistentObject
-//						sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
-//						
-//					}
-//					
-//					NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self class] tableName], [prop stringAsSQLColumnName], pk];
-//					if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-//						NSLog(@"Error deleting from foreign key table: %s", errmsg);
-//					sqlite3_free(errmsg);
-//				}
-//			}
-//		}
-//	}
 }
 
 - (NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter
@@ -914,7 +921,7 @@ NSMutableArray* recursionCheck;
 {
 	NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
 	BOOL returnValue = TRUE;
-
+	
 	if( ![[object class] isSubclassOfClass:[self class]] )
 		return FALSE;
 	
@@ -930,7 +937,7 @@ NSMutableArray* recursionCheck;
 		
 		if(myProperty == nil || theirProperty == nil)
 			continue;
-			
+		
 		if(![myProperty isEqual:theirProperty])
 		{
 			//if the numbers are both floats, allow some margin of error
@@ -943,8 +950,8 @@ NSMutableArray* recursionCheck;
 			}
 			
 			if( [[myProperty class] isSubclassOfClass: [NSDate class]] &&
-				 fabs([myProperty timeIntervalSinceDate: theirProperty]) < 0.001
-			)
+			   fabs([myProperty timeIntervalSinceDate: theirProperty]) < 0.001
+			   )
 				continue;
 			
 			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
@@ -960,9 +967,9 @@ NSMutableArray* recursionCheck;
 		}
 		
 		if(	[[myProperty class] isSubclassOfClass:[SQLitePersistentObject class]] &&
-			[[theirProperty class] isSubclassOfClass:[SQLitePersistentObject class]] &&
-			![recursionCheck containsObject:theirProperty] &&
-			![recursionCheck containsObject:myProperty] )
+		   [[theirProperty class] isSubclassOfClass:[SQLitePersistentObject class]] &&
+		   ![recursionCheck containsObject:theirProperty] &&
+		   ![recursionCheck containsObject:myProperty] )
 		{
 			if( ![myProperty areAllPropertiesEqual:theirProperty] )
 			{
@@ -970,7 +977,7 @@ NSMutableArray* recursionCheck;
 				return FALSE;
 			}
 		}
-			
+		
 	}
 	
 	[recursionCheck removeObject:self];
@@ -1007,21 +1014,21 @@ NSMutableArray* recursionCheck;
 			} else {
 				BOOL isNewMethod = YES;
 				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-
+				
 				
 				struct objc_method *newMethod = calloc(sizeof(struct objc_method), 1);
 				struct objc_method_list *methodList = calloc(sizeof(struct objc_method_list)+sizeof(struct objc_method), 1);  
-
+				
 				newMethod->method_name = newMethodSelector;
 				newMethod->method_types = "@@:@";
 				newMethod->method_imp = (IMP) findByMethodImp;
-
+				
 				methodList->method_next = NULL;
 				methodList->method_count = 1;
 				memcpy(methodList->method_list, newMethod, sizeof(struct objc_method));
 				free(newMethod);
 				class_addMethods(selfMetaClass, methodList);
-
+				
 				assert(isNewMethod);
 				return YES;
 			}
