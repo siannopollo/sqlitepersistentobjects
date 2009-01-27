@@ -530,6 +530,10 @@ NSMutableArray *checkedTables;
 }
 +(NSArray *)pairedArraysForProperties:(NSArray *)theProps
 {
+	return [self pairedArraysForProperties:theProps withCriteria:@""];
+}
++(NSArray *)pairedArraysForProperties:(NSArray *)theProps withCriteria:(NSString *)criteriaString
+{
 	NSMutableArray *ret = [NSMutableArray array];
 	[[self class] tableCheck];
 	
@@ -540,7 +544,7 @@ NSMutableArray *checkedTables;
 	for (NSString *oneProp in theProps)
 		[query appendFormat:@", %@", [oneProp stringAsSQLColumnName]];
 	
-	[query appendFormat:@" FROM %@ ORDER BY PK", [[self class] tableName]];
+	[query appendFormat:@" FROM %@ %@ ORDER BY PK", [[self class] tableName], criteriaString];
 	
 	for (int i = 0; i <= [theProps count]; i++)
 		[ret addObject:[NSMutableArray array]];
@@ -607,7 +611,8 @@ NSMutableArray *checkedTables;
 		NSString *propName = [NSString stringWithUTF8String:property_getName(*oneProp)];
 		NSString *attrs = [NSString stringWithUTF8String: property_getAttributes(*oneProp)];
 		// Read only attributes are assumed to be derived or calculated
-		if ([[attrs lowercaseString] rangeOfString:@"readonly"].location == NSNotFound)
+		// See http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/chapter_8_section_3.html
+		if ([attrs rangeOfString:@",R,"].location == NSNotFound)
 		{
 			NSArray *attrParts = [attrs componentsSeparatedByString:@","];
 			if (attrParts != nil)
