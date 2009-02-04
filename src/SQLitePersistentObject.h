@@ -78,11 +78,16 @@
 -(NSArray *)findRelated:(Class)cls filter:(NSString *)filter;
 -(NSArray *)findRelated:(Class)cls;
 
+
+// Allows easy execution of SQL commands that return a single row, good for getting sums and averages of a single property
++ (double)performSQLAggregation: (NSString *)query;
+
 /*!
  This method should be overridden by subclasses in order to specify performance indices on the underyling table. 
  @result Should return an array of arrays. Each array represents one index, and should contain a list of the properties that the index should be created on, in the order the database should use to create it. This is case sensitive, and the values must match the value of property names
  */
 +(NSArray *)indices;
+
 
 /*!
  Deletes this object's corresponding row from the database table. This version does NOT cascade to child objects in other tables.

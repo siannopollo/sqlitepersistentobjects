@@ -67,6 +67,7 @@ static id findByMethodImp(id self, SEL _cmd, id value)
 + (NSString *)classNameForTableName:(NSString *)theTable;
 + (void)setUpDynamicMethods;
 - (void)makeClean;
+- (BOOL)isDirty;
 @end
 @interface SQLitePersistentObject (private_memory)
 + (void)registerObjectInMemory:(SQLitePersistentObject *)theObject;
@@ -80,7 +81,19 @@ NSMutableArray *checkedTables;
 @implementation SQLitePersistentObject
 #pragma mark -
 #pragma mark Public Class Methods
-
++ (double)performSQLAggregation: (NSString *)query
+{
+	double ret = -1.0;
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2( database,  [query UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		if (sqlite3_step(stmt) == SQLITE_ROW)
+			ret = sqlite3_column_double(stmt, 0);
+		sqlite3_finalize(stmt);
+	}
+	return ret;
+}
 + (void)clearCache
 {
 	if(objectMap != nil)
@@ -90,11 +103,11 @@ NSMutableArray *checkedTables;
 		[checkedTables removeAllObjects];
 	
 }
-
 +(NSArray *)indices
 {
 	return nil;
 }
+
 +(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString;
 {
 	NSArray *array = [self findByCriteria:criteriaString];
@@ -647,8 +660,52 @@ NSMutableArray *checkedTables;
 		return;
 	alreadySaving = YES;
 	
-	
 	[[self class] tableCheck];
+	
+	if (!dirty)
+	{
+		// Check child and owned objects to see if any of them are dirty
+		// Just tell children and composed objects to save themselves
+		NSDictionary *props = [[self class] propertiesWithEncodedTypes];
+		
+		for (NSString *propName in props)
+		{
+			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
+			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
+			id theProperty = [self valueForKey:propName];
+			if ([propType hasPrefix:@"@"] ) // Object
+			{
+				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+				
+				
+				if (! (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className)))
+				{
+					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
+						if ([theProperty isDirty])
+							dirty = YES;
+					
+				}
+				else
+				{
+					if (isNSSetType(className) || isNSArrayType(className))
+						for (id oneObject in (NSArray *)theProperty)
+							if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
+								if ([oneObject isDirty])
+									dirty = YES;					
+								else if (isNSDictionaryType(className))
+								{
+									for (id oneKey in [theProperty allKeys])
+									{
+										id oneObject = [theProperty objectForKey:oneKey];
+										if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
+											if ([oneObject isDirty])
+												dirty = YES;;
+									}
+								}
+				}
+			}
+		}
+	}
 	
 	if (dirty)
 	{
@@ -904,46 +961,7 @@ NSMutableArray *checkedTables;
 		
 		
 	}
-	else
-	{
-		// Just tell children and composed objects to save themselves
-		NSDictionary *props = [[self class] propertiesWithEncodedTypes];
-		for (NSString *propName in props)
-		{
-			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
-			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
-			id theProperty = [self valueForKey:propName];
-			if ([propType hasPrefix:@"@"] ) // Object
-			{
-				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
-				
-				
-				if (! (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className)))
-				{
-					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
-						[theProperty save];
-					
-				}
-				else
-				{
-					if (isNSSetType(className) || isNSArrayType(className))
-						for (id oneObject in (NSArray *)theProperty)
-							if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
-								[oneObject save];						
-					else if (isNSDictionaryType(className))
-					{
-						for (id oneKey in [theProperty allKeys])
-						{
-							id oneObject = [theProperty objectForKey:oneKey];
-							if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
-								[oneObject save];
-						}
-					}
-				}
-			}
-		}
-			
-	}
+	
 	alreadySaving = NO;
 }
 -(BOOL) existsInDB
@@ -1162,6 +1180,10 @@ NSMutableArray* recursionCheck;
 - (void)makeClean
 {
 	dirty = NO;
+}
+- (BOOL)isDirty
+{
+	return dirty;
 }
 + (NSString *)tableName
 {
