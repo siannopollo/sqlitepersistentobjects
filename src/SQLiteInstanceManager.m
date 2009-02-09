@@ -26,7 +26,6 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 #pragma mark Private Method Declarations
 @interface SQLiteInstanceManager (private)
 - (NSString *)databaseFilepath;
-- (void)executeUpdateSQL:(NSString *) updateSQL;
 @end
 
 @implementation SQLiteInstanceManager
@@ -103,6 +102,19 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 	}
 	return database;
 }
+- (BOOL)tableExists:(NSString *)tableName
+{
+	BOOL ret = NO;
+	// pragma table_info(i_c_project);
+	NSString *query = [NSString stringWithFormat:@"pragma table_info(%@);", tableName];
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2( database,  [query UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		if (sqlite3_step(stmt) == SQLITE_ROW)
+			ret = YES;
+		sqlite3_finalize(stmt);
+	}
+	return ret;
+}
 - (void)setAutoVacuum:(SQLITE3AutoVacuum)mode
 {
 	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA auto_vacuum=%d", mode];
@@ -130,14 +142,6 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	[self executeUpdateSQL:@"VACUUM"];
 }
-#pragma mark -
-- (void)dealloc
-{
-	[databaseFilepath release];
-	[super dealloc];
-}
-#pragma mark -
-#pragma mark Private Methods
 - (void)executeUpdateSQL:(NSString *) updateSQL
 {
 	char *errorMsg;
@@ -147,6 +151,15 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		sqlite3_free(errorMsg);
 	}
 }
+#pragma mark -
+- (void)dealloc
+{
+	[databaseFilepath release];
+	[super dealloc];
+}
+#pragma mark -
+#pragma mark Private Methods
+
 - (NSString *)databaseFilepath
 {
 	if (databaseFilepath == nil)

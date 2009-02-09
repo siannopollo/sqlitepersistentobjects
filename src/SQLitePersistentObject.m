@@ -67,6 +67,7 @@ static id findByMethodImp(id self, SEL _cmd, id value)
 + (NSString *)classNameForTableName:(NSString *)theTable;
 + (void)setUpDynamicMethods;
 - (void)makeClean;
+- (void)markDirty;
 - (BOOL)isDirty;
 @end
 @interface SQLitePersistentObject (private_memory)
@@ -1177,6 +1178,10 @@ NSMutableArray* recursionCheck;
 	
 	return ret;
 }
+- (void)markDirty
+{
+	dirty = YES;
+}
 - (void)makeClean
 {
 	dirty = NO;
@@ -1214,7 +1219,26 @@ NSMutableArray* recursionCheck;
 	[tableNamesByClass setObject:ret forKey:[self className]];
 	return ret;
 }
-
++(NSArray *)tableColumns
+{
+	NSMutableArray *ret = [NSMutableArray array];
+	// pragma table_info(i_c_project);
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	NSString *query = [NSString stringWithFormat:@"pragma table_info(%@);", [self tableName]];
+	sqlite3_stmt *stmt;
+	if (sqlite3_prepare_v2( database,  [query UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+		while (sqlite3_step(stmt) == SQLITE_ROW)
+		{
+			const unsigned char *colName = sqlite3_column_text(stmt, 1);
+			NSString *colString = [NSString stringWithUTF8String:(const char *)colName];
+			[ret addObject:colString];
+		}
+		
+		sqlite3_finalize(stmt);
+	}
+	return ret;
+	
+}
 +(void)tableCheck
 {
 	
@@ -1347,6 +1371,62 @@ NSMutableArray* recursionCheck;
 						NSLog(@"Error creating indices on %@: %s", [self tableName], errmsg);
 				}
 			}
+		}
+		
+		// Now, make sure that every property has a corresponding column, alter the table for any that are missing
+		NSArray *tableCols = [self tableColumns];
+		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
+		{ 
+			NSString *propName = [oneProp stringAsSQLColumnName];
+			if (![tableCols containsObject:propName])
+			{
+				// No underlying column - could be a collection
+				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:oneProp];
+				if ([propType hasPrefix:@"@"])
+				{
+					NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+					if (isNSArrayType(className) || isNSDictionaryType(className) || isNSSetType(className))
+					{
+						// It's a collection, it's okay for there to be no column, and we don't even need to 
+						// check if it exists, because we used create if not exists above, so it will get created
+						// no matter what. I'm going to leave the if clause and this comment here though so
+						// nobody spends time doing unnecessary work implementing this...
+					}
+					else
+					{
+						Class propClass = objc_lookUpClass([className UTF8String]);
+						NSString *colType = nil;
+						
+						if ([propClass isSubclassOfClass:[SQLitePersistentObject class]])
+							colType = @"TEXT";
+						else if ([propClass canBeStoredInSQLite])
+							colType = [propClass columnTypeForObjectStorage];
+						
+						[[SQLiteInstanceManager sharedManager] executeUpdateSQL:[NSString stringWithFormat:@"alter table %@ add column %@ %@", [self tableName], propName, colType]];
+					}
+				}
+				else
+				{
+					// TODO: Refactor out the col-type for property type into a single method or inline function
+					NSString *colType = @"TEXT";
+					if ([propType isEqualToString:@"i"] || // int
+						[propType isEqualToString:@"I"] || // unsigned int
+						[propType isEqualToString:@"l"] || // long
+						[propType isEqualToString:@"L"] || // usigned long
+						[propType isEqualToString:@"q"] || // long long
+						[propType isEqualToString:@"Q"] || // unsigned long long
+						[propType isEqualToString:@"s"] || // short
+						[propType isEqualToString:@"S"] ||  // unsigned short
+						[propType isEqualToString:@"B"] )   // bool or _Bool
+						colType = @"INTEGER";	
+					else if ([propType isEqualToString:@"f"] || // float
+							 [propType isEqualToString:@"d"] )  // double
+						colType = @"REAL";
+					
+					[[SQLiteInstanceManager sharedManager] executeUpdateSQL:[NSString stringWithFormat:@"alter table %@ add column %@ %@", [self tableName], propName, colType]];
+				}
+			}
+			
 		}
 	}
 }
