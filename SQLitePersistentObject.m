@@ -80,6 +80,9 @@ NSMutableDictionary *objectMap;
 NSMutableArray *checkedTables;
 
 @implementation SQLitePersistentObject
+
+@synthesize dirty;
+
 #pragma mark -
 #pragma mark Public Class Methods
 + (double)performSQLAggregation: (NSString *)query
@@ -147,6 +150,9 @@ NSMutableArray *checkedTables;
 }
 +(void)deleteObject:(NSInteger)inPk cascade:(BOOL)cascade
 {
+	if(inPk < 0)
+		return;
+	
 	BOOL tableChecked = NO;
 	if (!tableChecked)
 	{
@@ -156,6 +162,9 @@ NSMutableArray *checkedTables;
 		//Unregister the object, to prevent it from being returned later if the PK is ever reused.
 		//We have to do this before the delete while we can still retrieve the object.
 		SQLitePersistentObject* objToDelete = [self findByPK:inPk];
+		if(objToDelete == nil)
+			return;
+		
 		[self unregisterObject:objToDelete];
 		
 		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self tableName], inPk];
@@ -700,7 +709,7 @@ NSMutableArray *checkedTables;
 										id oneObject = [theProperty objectForKey:oneKey];
 										if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
 											if ([oneObject isDirty])
-												dirty = YES;;
+												dirty = YES;
 									}
 								}
 				}
@@ -1124,7 +1133,7 @@ NSMutableArray* recursionCheck;
 	if ((self=[super init]))
 	{
 		pk = -1;
-		dirty = NO;
+		dirty = YES;
 		alreadySaving = NO;
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 			[self addObserver:self forKeyPath:oneProp options:0 context:nil];
