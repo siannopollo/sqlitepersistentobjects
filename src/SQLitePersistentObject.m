@@ -81,8 +81,6 @@ NSMutableArray *checkedTables;
 
 @implementation SQLitePersistentObject
 
-@synthesize dirty;
-
 #pragma mark -
 #pragma mark Public Class Methods
 + (double)performSQLAggregation: (NSString *)query
@@ -361,7 +359,7 @@ NSMutableArray *checkedTables;
 					if ([propType hasPrefix:@"@"])
 					{
 						NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
-						if (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className))
+						if (isCollectionType(x))
 						{
 							if (isNSSetType(className))
 							{
@@ -688,7 +686,7 @@ NSMutableArray *checkedTables;
 				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
 				
 				
-				if (! (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className)))
+				if (! (isCollectionType(x)) )
 				{
 					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
 						if ([theProperty isDirty])
@@ -751,7 +749,7 @@ NSMutableArray *checkedTables;
 			NSString *className = @"";
 			if ([propType hasPrefix:@"@"])
 				className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
-			if (! (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className)))
+			if (! (isCollectionType(x)))
 			{
 				[updateSQL appendFormat:@", %@", [propName stringAsSQLColumnName]];
 				[bindSQL appendString:@", ?"];
@@ -805,7 +803,7 @@ NSMutableArray *checkedTables;
 					NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
 					
 					
-					if (! (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className)))
+					if (! (isCollectionType(x)) )
 					{
 						
 						if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
