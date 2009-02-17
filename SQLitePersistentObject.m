@@ -522,6 +522,7 @@ NSMutableArray *checkedTables;
 				}
 			}
 			[oneItem makeClean];
+			[[self class] registerObjectInMemory:oneItem];
 			[ret addObject:oneItem];
 			[oneItem release];
 		}
