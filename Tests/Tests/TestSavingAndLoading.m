@@ -95,4 +95,23 @@
 	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 }
 
+- (void)testShouldKeepObjectReferenceInMemoryMapWhenLoading
+{
+	BasicData*	basicData = [[BasicData alloc] init];
+	BasicData*	basicDataDuplicate;
+	int pk;
+	
+	[basicData setFixtureData];
+	[basicData save];
+	pk = [basicData pk];
+	[basicData release];
+	[SQLitePersistentObject clearCache];
+	
+	
+	basicData = (BasicData*)[BasicData findByPK:pk];
+	basicDataDuplicate = (BasicData*)[BasicData findByPK:pk];
+	
+	STAssertTrue(basicData == basicDataDuplicate, @"Objects loaded from the database twice should be exactly the same (in memory)");
+}
+
 @end

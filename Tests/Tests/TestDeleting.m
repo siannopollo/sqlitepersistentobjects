@@ -49,7 +49,7 @@ extern NSMutableArray* recursionCheck;
 		if (cascade && [colType hasPrefix:@"@"])
 		{
 			NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
-			if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
+			if (isCollectionType(className))
 			{
 				if([self sqliteStatementReturnsData:
 						[NSString stringWithFormat:@"SELECT * FROM %@_%@ WHERE parent_pk = %d",  
