@@ -21,8 +21,8 @@
 
 -(void) setFixtureData
 {
-	_ref = [[RecursiveReferential alloc] init];
-	_ref.ref = self;
+	self.ref = [[RecursiveReferential alloc] init];
+	self.ref.ref = self;
 }
 
 @end

@@ -5,6 +5,7 @@
 #import "NSDataContainer.h"
 #import "Collections.h"
 #import "RecursiveReferential.h"
+#import "NestedCollections.h"
 
 @interface TestSavingAndLoading : SenTestCase 
 {
@@ -43,7 +44,22 @@
 	[SQLitePersistentObject clearCache];
 	database = [class findByPK:[memory pk]];
 	
-	STAssertTrue([memory areAllPropertiesEqual:database], @"");
+	STAssertTrue([memory areAllPropertiesEqual:database], @"%@", class);
+}
+
+- (void)testShouldSaveAndLoadWhenPropetyIsNil
+{
+	Collections*	col = [[Collections alloc] init];
+	Collections*	database;
+	[col setFixtureData];
+	[col.array release];
+	col.array = nil;
+	
+	[col save];
+	[SQLitePersistentObject clearCache];
+	database = (Collections*)[Collections findByPK:[col pk]];
+	
+	STAssertTrue([col areAllPropertiesEqual:database], @"");
 }
 
 - (void)testShouldSaveAndLoadWhenObjectContainsNothing
@@ -52,6 +68,7 @@
 	[self saveAndLoadWhenObjectContainsNothingWithClass: [NSDataContainer class]];
 	[self saveAndLoadWhenObjectContainsNothingWithClass: [Collections class]];
 	[self saveAndLoadWhenObjectContainsNothingWithClass: [RecursiveReferential class]];
+	[self saveAndLoadWhenObjectContainsNothingWithClass: [NestedCollections class]];
 }
 
 -(void)saveAndLoadWhenObjectContainsDataWithClass:(Class)class
@@ -64,7 +81,7 @@
 	[SQLitePersistentObject clearCache];
 	database = [class findByPK:[memory pk]];
 	
-	STAssertTrue([memory areAllPropertiesEqual:database], @"");
+	STAssertTrue([memory areAllPropertiesEqual:database], @"%@", [memory description]);
 }
 
 - (void)testShouldSaveAndLoadWhenObjectContainsData
@@ -73,7 +90,8 @@
 	[self saveAndLoadWhenObjectContainsDataWithClass: [NSDataContainer class]];
 	[self saveAndLoadWhenObjectContainsDataWithClass: [Collections class]];
 	
-	//infinite loop
+	//UNSUPPORTED OPERATIONS
+	//[self saveAndLoadWhenObjectContainsDataWithClass: [NestedCollections class]];
 	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 }
 

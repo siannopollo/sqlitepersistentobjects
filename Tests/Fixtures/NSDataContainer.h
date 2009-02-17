@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SQLitePersistentObject.h"
+#import "BasicData.h"
 
 @interface NSDataContainer : SQLitePersistentObject
 {		
@@ -16,9 +17,15 @@
 	
 	CGRect		rect;
 	NSData*		_rectData;
+	
+	NSNumber*	_number;
+	NSDate*		_date;
+	BasicData*	_basic;
 }
 
 @property(assign) NSData* unsignedArrayData;
 @property(assign) NSData* rectData;
-
+@property(assign) NSNumber* number;
+@property(assign) NSDate* date;
+@property(assign) BasicData* basic;
 @end

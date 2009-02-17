@@ -8,9 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "SQLitePersistentObject.h"
-#import "SQLiteMutableArray.h"
 
-@interface Collections : SQLitePersistentObject
+@interface NestedCollections : SQLitePersistentObject
 {		
 	NSMutableArray*			_array;
 	NSMutableDictionary*	_dict;
@@ -20,7 +19,5 @@
 @property(assign) NSMutableArray* array;
 @property(assign) NSMutableDictionary* dict;
 @property(assign) NSMutableSet* set;
-
--(void) setFixtureData;
 
 @end

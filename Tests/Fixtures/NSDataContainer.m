@@ -10,6 +10,8 @@
 
 @implementation NSDataContainer
 
+@synthesize number=_number, date=_date, basic=_basic;
+
 -(NSData*) unsignedArrayData
 {
 	return [[NSData alloc] initWithBytes:unsignedArray length:sizeof(unsigned)*100];
@@ -57,6 +59,10 @@
 		unsignedArray[i] = rand() % 9999;
 	}
 	rect = CGRectMake(1, 2, 3, 4);
+	self.number = [NSNumber numberWithInt:1234];
+	self.date = [NSDate dateWithTimeIntervalSinceNow:0];
+	self.basic = [[BasicData alloc] init];
+	[self.basic setFixtureData];
 }
 
 @end
