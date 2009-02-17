@@ -29,7 +29,8 @@
 #import <objc/message.h>
 #endif
 
-#define isNSArrayType(x) ([x isEqualToString:@"NSArray"] || [x isEqualToString:@"NSMutableArray"] || [x isEqualToString:@"SQLiteMutableArray"])
+#define isCollectionType(x) (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className))
+#define isNSArrayType(x) ([x isEqualToString:@"NSArray"] || [x isEqualToString:@"NSMutableArray"])
 #define isNSDictionaryType(x) ([x isEqualToString:@"NSDictionary"] || [x isEqualToString:@"NSMutableDictionary"])
 #define isNSSetType(x) ([x isEqualToString:@"NSSet"] || [x isEqualToString:@"NSMutableSet"])
 
@@ -57,7 +58,6 @@
 	BOOL		alreadySaving;
 }
 
-@property BOOL dirty;
 /*!
  Returns the name of the table that this object will use to save its data
  */
