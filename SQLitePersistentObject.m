@@ -23,10 +23,15 @@
 #import "NSString-UppercaseFirst.h"
 #import "NSString-NumberStuff.h"
 #import "NSObject-ClassName.h"
+#import "NSObject-MissingKV.h"
 #ifdef TARGET_OS_COCOTRON
 #import <objc/objc-class.h>
 #endif
 
+// Squelch compiler warnings about these deprecated methods - they work on iPhone, though the declarations for them are not available to compiler on iPhone
+#ifdef TARGET_OS_IPHONE
+
+#endif
 static id findByMethodImp(id self, SEL _cmd, id value)
 {
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
@@ -206,6 +211,7 @@ NSMutableArray *checkedTables;
 {
 	return [self findFirstByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", inPk]];
 }
+
 +(NSArray *)findByCriteria:(NSString *)criteriaString
 {
 	
@@ -1441,6 +1447,23 @@ NSMutableArray* recursionCheck;
 - (void)setPk:(int)newPk
 {
 	pk = newPk;
+}
+#pragma mark -
+#pragma mark KVO
+- (void)takeValuesFromDictionary:(NSDictionary *)properties
+{
+	[self markDirty];
+	[super takeValuesFromDictionary:properties];
+}
+- (void)takeValue:(id)value forKey:(NSString *)key
+{
+	[self markDirty];
+	[super takeValue:value forKey:key];
+}
+- (void)setValue:(id)value forKey:(NSString *)key
+{
+	[self markDirty];
+	[super setValue:value forKey:key];
 }
 #pragma mark -
 #pragma mark Memory Map Methods
