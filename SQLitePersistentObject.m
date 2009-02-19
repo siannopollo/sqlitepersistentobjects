@@ -659,6 +659,8 @@ NSMutableArray *checkedTables;
 		NSString *propName = [oneProp objectAtIndex:0];
 		NSString *attrs = [oneProp objectAtIndex:1];
 		[theProps setObject:attrs forKey:propName];
+		free( propList );
+
 #endif
 	}
 	return theProps;	
