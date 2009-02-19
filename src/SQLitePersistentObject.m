@@ -28,10 +28,6 @@
 #import <objc/objc-class.h>
 #endif
 
-// Squelch compiler warnings about these deprecated methods - they work on iPhone, though the declarations for them are not available to compiler on iPhone
-#ifdef TARGET_OS_IPHONE
-
-#endif
 static id findByMethodImp(id self, SEL _cmd, id value)
 {
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
@@ -156,53 +152,48 @@ NSMutableArray *checkedTables;
 	if(inPk < 0)
 		return;
 	
-	BOOL tableChecked = NO;
-	if (!tableChecked)
+	[self tableCheck];
+	
+	//Unregister the object, to prevent it from being returned later if the PK is ever reused.
+	//We have to do this before the delete while we can still retrieve the object.
+	SQLitePersistentObject* objToDelete = [self findByPK:inPk];
+	if(objToDelete == nil)
+		return;
+	
+	[self unregisterObject:objToDelete];
+	
+	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self tableName], inPk];
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	char *errmsg = NULL;
+	if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+		NSLog(@"Error deleting row in table: %s", errmsg);
+	sqlite3_free(errmsg);
+	
+	NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
+	
+	for (NSString *prop in [theProps allKeys])
 	{
-		tableChecked = YES;
-		[self tableCheck];
-		
-		//Unregister the object, to prevent it from being returned later if the PK is ever reused.
-		//We have to do this before the delete while we can still retrieve the object.
-		SQLitePersistentObject* objToDelete = [self findByPK:inPk];
-		if(objToDelete == nil)
-			return;
-		
-		[self unregisterObject:objToDelete];
-		
-		NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self tableName], inPk];
-		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
-		char *errmsg = NULL;
-		if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-			NSLog(@"Error deleting row in table: %s", errmsg);
-		sqlite3_free(errmsg);
-		
-		NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
-		
-		for (NSString *prop in [theProps allKeys])
+		NSString *colType = [theProps valueForKey:prop];
+		if ([colType hasPrefix:@"@"])
 		{
-			NSString *colType = [theProps valueForKey:prop];
-			if ([colType hasPrefix:@"@"])
+			NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
+			if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
 			{
-				NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
-				if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
+				if (cascade)
 				{
-					if (cascade)
-					{
-						Class fkClass = objc_lookUpClass([prop UTF8String]);
-						NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
-						// Suppress the error if there was one: it's faster than checking to see if the table exists. 
-						// It may not if the property was used to store strings or another storage class but never
-						// a subclass of SQLitePersistentObject
-						sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
-						
-					}
+					Class fkClass = objc_lookUpClass([prop UTF8String]);
+					NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
+					// Suppress the error if there was one: it's faster than checking to see if the table exists. 
+					// It may not if the property was used to store strings or another storage class but never
+					// a subclass of SQLitePersistentObject
+					sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
 					
-					NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self class] tableName], [prop stringAsSQLColumnName], inPk];
-					if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-						NSLog(@"Error deleting from foreign key table: %s", errmsg);
-					sqlite3_free(errmsg);
 				}
+				
+				NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self class] tableName], [prop stringAsSQLColumnName], inPk];
+				if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+					NSLog(@"Error deleting from foreign key table: %s", errmsg);
+				sqlite3_free(errmsg);
 			}
 		}
 	}
@@ -1055,14 +1046,14 @@ NSMutableArray* recursionCheck;
 			   )
 				continue;
 			
-			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
-			[desc appendString:@"\nProperty was not equal:"];
-			[desc appendString:prop];
-			[desc appendString:@" = "];
-			[desc appendString:[myProperty description]];
-			[desc appendString:@" was not equal to "];
-			[desc appendString:[theirProperty description]];
-			NSLog(desc);
+//			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
+//			[desc appendString:@"\nProperty was not equal:"];
+//			[desc appendString:prop];
+//			[desc appendString:@" = "];
+//			[desc appendString:[myProperty description]];
+//			[desc appendString:@" was not equal to "];
+//			[desc appendString:[theirProperty description]];
+//			NSLog(desc);
 			[recursionCheck removeObject:self];
 			returnValue = FALSE;
 		}
