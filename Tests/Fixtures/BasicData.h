@@ -11,17 +11,17 @@
 
 @interface BasicData : SQLitePersistentObject
 {		
-	int					_b1;
-	unsigned int		_b2;
-	long				_b3;
-	unsigned long		_b4;
-	long long			_b5;
-	unsigned long long	_b6;
-	short				_b7;
-	unsigned short		_b8;
-	BOOL				_b9;
-	float				_b10;
-	double				_b11;
+	int					b1;
+	unsigned int		b2;
+	long				b3;
+	unsigned long		b4;
+	long long			b5;
+	unsigned long long	b6;
+	short				b7;
+	unsigned short		b8;
+	BOOL				b9;
+	float				b10;
+	double				b11;
 }
 
 @property int b1;

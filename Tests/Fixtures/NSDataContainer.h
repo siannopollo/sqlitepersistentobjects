@@ -13,14 +13,14 @@
 @interface NSDataContainer : SQLitePersistentObject
 {		
 	unsigned	unsignedArray[100];
-	NSData*		_unsignedArrayData;
+	NSData*		unsignedArrayData;
 	
 	CGRect		rect;
-	NSData*		_rectData;
+	NSData*		rectData;
 	
-	NSNumber*	_number;
-	NSDate*		_date;
-	BasicData*	_basic;
+	NSNumber*	number;
+	NSDate*		date;
+	BasicData*	basic;
 }
 
 @property(assign) NSData* unsignedArrayData;

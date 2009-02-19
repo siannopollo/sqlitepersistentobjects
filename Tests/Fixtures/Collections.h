@@ -12,9 +12,9 @@
 
 @interface Collections : SQLitePersistentObject
 {		
-	NSMutableArray*			_array;
-	NSMutableDictionary*	_dict;
-	NSMutableSet*			_set;
+	NSMutableArray*			array;
+	NSMutableDictionary*	dict;
+	NSMutableSet*			set;
 }
 
 @property(assign) NSMutableArray* array;

@@ -9,7 +9,7 @@
 #import "BasicData.h"
 
 @implementation BasicData
-@synthesize b1=_b1,b2=_b2,b3=_b3,b4=_b4,b5=_b5,b6=_b6,b7=_b7,b8=_b8,b9=_b9,b10=_b10,b11=_b11;
+@synthesize b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11;
 
 -(id) init
 {

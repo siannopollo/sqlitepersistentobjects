@@ -11,14 +11,14 @@
 
 @implementation Collections
 
-@synthesize array=_array,set=_set,dict=_dict;
+@synthesize array,set,dict;
 
 -(id) init
 {
 	[super init];
-	_array = [[NSMutableArray alloc] init];
-	_dict = [[NSMutableDictionary alloc] init];
-	_set = [[NSMutableSet alloc] init];
+	array = [[NSMutableArray alloc] init];
+	dict = [[NSMutableDictionary alloc] init];
+	set = [[NSMutableSet alloc] init];
 	return self;
 }
 
@@ -31,9 +31,9 @@
 		sprintf(buffer, "%d", (rand() % 9999) );
 		NSString* string = [NSString stringWithUTF8String:buffer];
 		
-		[_array addObject:string];
-		[_dict setObject:string forKey:string];
-		[_set addObject:string];
+		[self.array addObject:string];
+		[self.dict setObject:string forKey:string];
+		[self.set addObject:string];
 	}
 }
 

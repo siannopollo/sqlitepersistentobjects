@@ -11,7 +11,7 @@
 
 @implementation RecursiveReferential
 
-@synthesize ref=_ref;
+@synthesize ref;
 
 -(id) init
 {

@@ -11,7 +11,7 @@
 
 @interface RecursiveReferential : SQLitePersistentObject
 {		
-	RecursiveReferential*	_ref;
+	RecursiveReferential*	ref;
 }
 
 @property(assign) RecursiveReferential* ref;

@@ -10,7 +10,7 @@
 
 @implementation NSDataContainer
 
-@synthesize number=_number, date=_date, basic=_basic;
+@synthesize number, date, basic;
 
 -(NSData*) unsignedArrayData
 {

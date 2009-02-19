@@ -95,23 +95,32 @@
 	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 }
 
-- (void)testShouldKeepObjectReferenceInMemoryMapWhenLoading
+- (void)shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass:(Class)class
 {
-	BasicData*	basicData = [[BasicData alloc] init];
-	BasicData*	basicDataDuplicate;
-	int pk;
+	id	inMemoryObject = [[class alloc] init];
+	id	databaseLoadedObject;
 	
-	[basicData setFixtureData];
-	[basicData save];
-	pk = [basicData pk];
-	[basicData release];
+	[inMemoryObject save];
+	[inMemoryObject setFixtureData];
+	[inMemoryObject save];
+	
 	[SQLitePersistentObject clearCache];
+	databaseLoadedObject = [class findByPK:[inMemoryObject pk]];
 	
-	
-	basicData = (BasicData*)[BasicData findByPK:pk];
-	basicDataDuplicate = (BasicData*)[BasicData findByPK:pk];
-	
-	STAssertTrue(basicData == basicDataDuplicate, @"Objects loaded from the database twice should be exactly the same (in memory)");
+	STAssertTrue([inMemoryObject areAllPropertiesEqual:databaseLoadedObject], @"%@", [inMemoryObject description]);
 }
+
+- (void)testShouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSaving
+{
+	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [BasicData class]];
+	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [NSDataContainer class]];
+	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [Collections class]];
+	
+	//UNSUPPORTED OPERATIONS
+	//[self saveAndLoadWhenObjectContainsDataWithClass: [NestedCollections class]];
+	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
+}
+
+
 
 @end

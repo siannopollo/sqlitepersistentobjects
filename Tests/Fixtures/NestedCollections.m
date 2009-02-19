@@ -11,18 +11,18 @@
 
 @implementation NestedCollections
 
-@synthesize array=_array,set=_set,dict=_dict;
+@synthesize array,set,dict;
 
 -(id) init
 {
 	[super init];
-	_array = [[NSMutableArray alloc] init];
-	_dict = [[NSMutableDictionary alloc] init];
-	_set = [[NSMutableSet alloc] init];
+	array = [[NSMutableArray alloc] init];
+	dict = [[NSMutableDictionary alloc] init];
+	set = [[NSMutableSet alloc] init];
 	return self;
 }
 
--(void) add100RandomStringsToArray:(NSMutableArray*)array
+-(void) add100RandomStringsToArray:(NSMutableArray*)theArray
 {
 	char buffer[128];
 	
@@ -30,7 +30,7 @@
 	{
 		sprintf(buffer, "%d", (rand() % 9999) );
 		NSString* string = [NSString stringWithUTF8String:buffer];
-		[array addObject:string];
+		[theArray addObject:string];
 	}
 }
 
