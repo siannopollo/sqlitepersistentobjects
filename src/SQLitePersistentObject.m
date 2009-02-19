@@ -637,9 +637,9 @@ NSMutableArray *checkedTables;
 	for (i=0; i < outCount; i++)
 	{
 #ifndef TARGET_OS_COCOTRON
-		objc_property_t * oneProp = propList + i;
-		NSString *propName = [NSString stringWithUTF8String:property_getName(*oneProp)];
-		NSString *attrs = [NSString stringWithUTF8String: property_getAttributes(*oneProp)];
+		objc_property_t oneProp = propList[i];
+		NSString *propName = [NSString stringWithUTF8String:property_getName(oneProp)];
+		NSString *attrs = [NSString stringWithUTF8String: property_getAttributes(oneProp)];
 		// Read only attributes are assumed to be derived or calculated
 		// See http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/chapter_8_section_3.html
 		if ([attrs rangeOfString:@",R,"].location == NSNotFound)
@@ -654,7 +654,6 @@ NSMutableArray *checkedTables;
 				}
 			}
 		}
-		free( propList );
 #else
 		NSArray *oneProp = [propList objectAtIndex:i];
 		NSString *propName = [oneProp objectAtIndex:0];
@@ -662,6 +661,11 @@ NSMutableArray *checkedTables;
 		[theProps setObject:attrs forKey:propName];
 #endif
 	}
+	
+#ifndef TARGET_OS_COCOTRON	
+	free( propList );
+#endif
+	
 	return theProps;	
 }
 #pragma mark -
