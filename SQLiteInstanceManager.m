@@ -127,7 +127,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 }
 - (void)setLockingMode:(SQLITE3LockingMode)mode
 {
-	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA cache_size=%d", mode];
+	NSString *updateSQL = [NSString stringWithFormat:@"PRAGMA locking_mode=%d", mode];
 	[self executeUpdateSQL:updateSQL];
 }
 - (void)deleteDatabase
