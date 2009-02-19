@@ -780,7 +780,7 @@ NSMutableArray *checkedTables;
 				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 				//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 				id theProperty = [self valueForKey:propName];
-				if (theProperty == nil)
+				if (theProperty == nil && ! (isNSArrayType(propType) || isNSDictionaryType(propType) || isNSSetType(propType)))
 				{
 					sqlite3_bind_null(stmt, colIndex++);
 				}
@@ -1449,7 +1449,7 @@ NSMutableArray* recursionCheck;
 	pk = newPk;
 }
 #pragma mark -
-#pragma mark KVO
+#pragma mark KV
 - (void)takeValuesFromDictionary:(NSDictionary *)properties
 {
 	[self markDirty];
