@@ -4,6 +4,7 @@
 #import "Post.h"
 #import "PostCategory.h"
 #import "PostComment.h"
+#import "PostInvalid.h"
 #import "SQLiteInstanceManager.h"
 
 #define LOG(x, ...) { printf([[NSString stringWithFormat:x,##__VA_ARGS__] UTF8String]); printf("\n"); }
@@ -21,7 +22,9 @@ void init_objects()
 	Post *p = [[[Post alloc] init] autorelease];
 	p.title = @"Test post 1";
 	p.text = @"text";
+    if ([p existsInDB] == NO) LOG(@"Confirmed not in DB yet");
 	[p save];
+    if ([p existsInDB] == YES) LOG(@"Confirmed object in DB now");
 	p = [[[Post alloc] init] autorelease];
 	p.title = @"Test post 2";
 	p.text = @"text";
@@ -35,11 +38,14 @@ void init_objects()
 	co.title = @"Comment 1 to Post 2";
 	co.post = p;
 	[co save];
+    
+    PostInvalid *pi = [[[PostInvalid alloc] init] autorelease];
+    [pi save];
 }
 
 void show_schema()
 {
-	LOG(@"* DB scema is:");
+	LOG(@"* DB schema is:");
 	system("sqlite3 test.db .schema");
 	printf("\n");
 }
