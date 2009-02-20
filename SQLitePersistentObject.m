@@ -673,6 +673,12 @@ NSMutableArray *checkedTables;
 	
 	[[self class] tableCheck];
 	
+    if (pk == 0)
+    {
+        NSLog(@"Object of type '%@' seems to be uninitialised, perhaps init does not call super init.", [[self class] description] );
+        return;
+    }
+    
 	if (!dirty)
 	{
 		// Check child and owned objects to see if any of them are dirty
@@ -977,7 +983,8 @@ NSMutableArray *checkedTables;
 }
 -(BOOL) existsInDB
 {
-	return pk >= 0;
+    // pk must be greater than 0 if its on the db
+	return pk > 0;
 }
 -(void)deleteObject
 {
