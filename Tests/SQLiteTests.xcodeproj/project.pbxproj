@@ -31,7 +31,6 @@
 		61992A1C0F47F9650052219A /* NSString-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A080F47F9650052219A /* NSString-SQLitePersistence.m */; };
 		61992A1D0F47F9650052219A /* NSString-UppercaseFirst.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A0A0F47F9650052219A /* NSString-UppercaseFirst.m */; };
 		61992A1E0F47F9650052219A /* SQLiteInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A0C0F47F9650052219A /* SQLiteInstanceManager.m */; };
-		61992A1F0F47F9650052219A /* SQLiteMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A0E0F47F9650052219A /* SQLiteMutableArray.m */; };
 		61992A200F47F9650052219A /* SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A100F47F9650052219A /* SQLitePersistentObject.m */; };
 		61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A120F47F9650052219A /* UIImage-SQLitePersistence.m */; };
 /* End PBXBuildFile section */
@@ -83,8 +82,6 @@
 		61992A0A0F47F9650052219A /* NSString-UppercaseFirst.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString-UppercaseFirst.m"; sourceTree = "<group>"; };
 		61992A0B0F47F9650052219A /* SQLiteInstanceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLiteInstanceManager.h; sourceTree = "<group>"; };
 		61992A0C0F47F9650052219A /* SQLiteInstanceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLiteInstanceManager.m; sourceTree = "<group>"; };
-		61992A0D0F47F9650052219A /* SQLiteMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLiteMutableArray.h; sourceTree = "<group>"; };
-		61992A0E0F47F9650052219A /* SQLiteMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLiteMutableArray.m; sourceTree = "<group>"; };
 		61992A0F0F47F9650052219A /* SQLitePersistentObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SQLitePersistentObject.h; sourceTree = "<group>"; };
 		61992A100F47F9650052219A /* SQLitePersistentObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLitePersistentObject.m; sourceTree = "<group>"; };
 		61992A110F47F9650052219A /* UIImage-SQLitePersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-SQLitePersistence.h"; sourceTree = "<group>"; };
@@ -201,8 +198,6 @@
 				61992A0A0F47F9650052219A /* NSString-UppercaseFirst.m */,
 				61992A0B0F47F9650052219A /* SQLiteInstanceManager.h */,
 				61992A0C0F47F9650052219A /* SQLiteInstanceManager.m */,
-				61992A0D0F47F9650052219A /* SQLiteMutableArray.h */,
-				61992A0E0F47F9650052219A /* SQLiteMutableArray.m */,
 				61992A0F0F47F9650052219A /* SQLitePersistentObject.h */,
 				61992A100F47F9650052219A /* SQLitePersistentObject.m */,
 				61992A110F47F9650052219A /* UIImage-SQLitePersistence.h */,
@@ -303,7 +298,6 @@
 				61992A1C0F47F9650052219A /* NSString-SQLitePersistence.m in Sources */,
 				61992A1D0F47F9650052219A /* NSString-UppercaseFirst.m in Sources */,
 				61992A1E0F47F9650052219A /* SQLiteInstanceManager.m in Sources */,
-				61992A1F0F47F9650052219A /* SQLiteMutableArray.m in Sources */,
 				61992A200F47F9650052219A /* SQLitePersistentObject.m in Sources */,
 				61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */,
 			);
