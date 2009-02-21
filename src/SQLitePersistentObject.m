@@ -335,7 +335,7 @@ NSMutableArray *checkedTables;
 							id colData = nil;
 							const char *columnText = (const char *)sqlite3_column_text(statement, i);
 							if (NULL != columnText)
-								colData = [propClass objectWithSqlColumnRepresentation:[NSString stringWithUTF8String:(const char *)sqlite3_column_text(statement, i)]];
+								colData = [propClass objectWithSqlColumnRepresentation:[NSString stringWithUTF8String:columnText]];
 							
 							
 							[oneItem setValue:colData forKey:propName];
@@ -356,7 +356,7 @@ NSMutableArray *checkedTables;
 					if ([propType hasPrefix:@"@"])
 					{
 						NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
-						if (isCollectionType(x))
+						if (isCollectionType(className))
 						{
 							if (isNSSetType(className))
 							{
@@ -695,7 +695,7 @@ NSMutableArray *checkedTables;
 				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
 				
 				
-				if (! (isCollectionType(x)) )
+				if (! (isCollectionType(className)) )
 				{
 					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
 						if ([theProperty isDirty])
@@ -758,7 +758,7 @@ NSMutableArray *checkedTables;
 			NSString *className = @"";
 			if ([propType hasPrefix:@"@"])
 				className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
-			if (! (isCollectionType(x)))
+			if (! (isCollectionType(className)))
 			{
 				[updateSQL appendFormat:@", %@", [propName stringAsSQLColumnName]];
 				[bindSQL appendString:@", ?"];
@@ -782,7 +782,7 @@ NSMutableArray *checkedTables;
 				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 				//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 				id theProperty = [self valueForKey:propName];
-				if (theProperty == nil && ! (isNSArrayType(propType) || isNSDictionaryType(propType) || isNSSetType(propType)))
+				if (theProperty == nil && ! (isCollectionType(propType)))
 				{
 					sqlite3_bind_null(stmt, colIndex++);
 				}
@@ -812,7 +812,7 @@ NSMutableArray *checkedTables;
 					NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
 					
 					
-					if (! (isCollectionType(x)) )
+					if (! (isCollectionType(className)) )
 					{
 						
 						if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])

@@ -29,7 +29,7 @@
 #import <objc/message.h>
 #endif
 
-#define isCollectionType(x) (isNSSetType(className) || isNSArrayType(className) || isNSDictionaryType(className))
+#define isCollectionType(x) (isNSSetType(x) || isNSArrayType(x) || isNSDictionaryType(x))
 #define isNSArrayType(x) ([x isEqualToString:@"NSArray"] || [x isEqualToString:@"NSMutableArray"])
 #define isNSDictionaryType(x) ([x isEqualToString:@"NSDictionary"] || [x isEqualToString:@"NSMutableDictionary"])
 #define isNSSetType(x) ([x isEqualToString:@"NSSet"] || [x isEqualToString:@"NSMutableSet"])
