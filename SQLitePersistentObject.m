@@ -735,15 +735,24 @@ NSMutableArray *checkedTables;
 		
 		if (pk < 0)
 		{
-			NSString *pkQuery = [NSString stringWithFormat:@"SELECT MAX(PK) FROM %@", [[self class] tableName]];
+			NSString *pkQuery = [NSString stringWithFormat:@"SELECT SEQ FROM SQLITESEQUENCE WHERE NAME='%@'", [[self class] tableName]];
 			sqlite3_stmt *statement;
 			if (sqlite3_prepare_v2(database, [pkQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
 			{
 				if (sqlite3_step(statement) == SQLITE_ROW) 
+				{
 					pk = sqlite3_column_int(statement, 0)+1;
+					char* errmsg;
+					
+					NSString *seqIncrementQuery = [NSString stringWithFormat:@"UPDATE SQLITESEQUENCE set seq=%d WHERE name='%@'", pk, [[self class] tableName]];
+					if (sqlite3_exec (database, [seqIncrementQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
+						NSLog(@"Error Message: %s", errmsg);
+				}
 				
 			}
-			else NSLog(@"Error determining next PK value in table %@", [[self class] tableName]);
+			else 
+				NSLog(@"Error determining next PK value in table %@", [[self class] tableName]);
+			
 			sqlite3_finalize(statement);
 		}
 		
@@ -1061,7 +1070,6 @@ NSMutableArray* recursionCheck;
 //			[desc appendString:@" was not equal to "];
 //			[desc appendString:[theirProperty description]];
 //			NSLog(desc);
-			[recursionCheck removeObject:self];
 			returnValue = FALSE;
 		}
 		
@@ -1271,7 +1279,6 @@ NSMutableArray* recursionCheck;
 		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 		NSMutableString *createSQL = [NSMutableString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (pk INTEGER PRIMARY KEY",[self tableName]];
 		
-		
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 		{ 
 			NSString *propName = [oneProp stringAsSQLColumnName];
@@ -1360,6 +1367,13 @@ NSMutableArray* recursionCheck;
 		
 		char *errmsg = NULL;
 		if (sqlite3_exec (database, [createSQL UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
+			NSLog(@"Error Message: %s", errmsg);
+		
+		if (sqlite3_exec (database, "CREATE TABLE IF NOT EXISTS SQLITESEQUENCE (name TEXT PRIMARY KEY, seq INTEGER)", NULL, NULL, &errmsg) != SQLITE_OK)		
+			NSLog(@"Error Message: %s", errmsg);
+		
+		NSMutableString *addSequenceSQL = [NSMutableString stringWithFormat:@"INSERT INTO SQLITESEQUENCE (name,seq) VALUES ('%@', 0)", [[self class] tableName]];
+		if (sqlite3_exec (database, [addSequenceSQL UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
 			NSLog(@"Error Message: %s", errmsg);
 		
 		NSArray *theIndices = [self indices];
