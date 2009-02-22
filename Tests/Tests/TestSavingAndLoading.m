@@ -71,13 +71,15 @@
 	[self saveAndLoadWhenObjectContainsNothingWithClass: [NestedCollections class]];
 }
 
--(void)saveAndLoadWhenObjectContainsDataWithClass:(Class)class
+- (void)saveAndLoadWhenObjectContainsDataWithClass:(Class)class
 {
 	id	memory = [[class alloc] init];
 	id	database;
 	
 	[memory setFixtureData];
+    STAssertFalse([memory existsInDB],@"check not in db");
 	[memory save];
+    STAssertTrue([memory existsInDB],@"check in db");
 	[SQLitePersistentObject clearCache];
 	database = [class findByPK:[memory pk]];
 	
