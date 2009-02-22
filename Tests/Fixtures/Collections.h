@@ -12,14 +12,22 @@
 
 @interface Collections : SQLitePersistentObject
 {		
-	NSMutableArray*			array;
-	NSMutableDictionary*	dict;
-	NSMutableSet*			set;
+	NSMutableArray*			stringsArray;
+	NSMutableDictionary*	stringsDict;
+	NSMutableSet*			stringsSet;
+	
+	NSMutableArray*			dataArray;
+	NSMutableDictionary*	dataDict;
+	NSMutableSet*			dataSet;	
 }
 
-@property(assign) NSMutableArray* array;
-@property(assign) NSMutableDictionary* dict;
-@property(assign) NSMutableSet* set;
+@property(assign) NSMutableArray* stringsArray;
+@property(assign) NSMutableDictionary* stringsDict;
+@property(assign) NSMutableSet* stringsSet;
+
+@property(assign) NSMutableArray* dataArray;
+@property(assign) NSMutableDictionary* dataDict;
+@property(assign) NSMutableSet* dataSet;
 
 -(void) setFixtureData;
 

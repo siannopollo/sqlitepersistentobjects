@@ -52,8 +52,8 @@
 	Collections*	col = [[Collections alloc] init];
 	Collections*	database;
 	[col setFixtureData];
-	[col.array release];
-	col.array = nil;
+	[col.stringsArray release];
+	col.stringsArray = nil;
 	
 	[col save];
 	[SQLitePersistentObject clearCache];
