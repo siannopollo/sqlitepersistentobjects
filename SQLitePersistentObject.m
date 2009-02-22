@@ -789,7 +789,9 @@ NSMutableArray *checkedTables;
 			for (NSString *propName in props)
 			{
 				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
-				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+				NSString *className = propType;
+				if ([propType hasPrefix:@"@"])
+					className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
 				//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 				id theProperty = [self valueForKey:propName];
 				if (theProperty == nil && ! (isCollectionType(className)))
