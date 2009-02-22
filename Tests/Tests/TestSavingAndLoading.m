@@ -106,6 +106,27 @@
 	STAssertTrue(expectedIndexFound == indexExists, @"Failed to find expected index '%@'", expectedIndex);	
 }
 
+- (void)assertTransient:(NSString *) columnName forTable: (NSString *) tableName
+{
+	sqlite3 *database = [_manager database];
+	
+	BOOL transientConfirmed = NO;
+	NSString *idxQuery = [NSString stringWithFormat:@"SELECT SQL FROM SQLITE_MASTER WHERE NAME='%@' AND TYPE='table'",
+						  tableName];
+	sqlite3_stmt *statement;
+	if (sqlite3_prepare_v2(database, [idxQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
+	{
+		if (sqlite3_step(statement) == SQLITE_ROW) 
+		{
+			NSString *createSql = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 0)];
+			NSRange rangeOfStr = [createSql rangeOfString:[columnName stringAsSQLColumnName]];
+			if (rangeOfStr.location == NSNotFound)
+				transientConfirmed = YES;
+		}
+	}			
+	STAssertTrue(transientConfirmed == YES, @"Transient property '%@' found as column '%@' on database table '%@'", columnName,[columnName stringAsSQLColumnName], tableName);	
+}
+
 
 - (void)testShouldSaveAndLoadWhenObjectContainsData
 {
@@ -117,7 +138,7 @@
 
 	// TODO: use one routine to derive index name here and in the main code so that changes to the naming routine do not cause a problem
 	[self assertIndex:@"n_s_data_container_number" forTable:[NSDataContainer tableName] exists:YES];
-	
+	[self assertTransient:@"transientNumber" forTable:[NSDataContainer tableName]];
 	
 	[self saveAndLoadWhenObjectContainsDataWithClass: [Collections class]];
 	[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];

@@ -10,12 +10,17 @@
 
 @implementation NSDataContainer
 
-@synthesize number, date, basic;
+@synthesize number, transientNumber, date, basic;
 
 +(NSArray *)indices
 {
 	NSArray *index1 = [NSArray arrayWithObject:@"number"];
 	return [NSArray arrayWithObject:index1];
+}
+
++(NSArray *)transients
+{
+	return [NSArray arrayWithObject:@"transientNumber"];
 }
 
 -(NSData*) unsignedArrayData

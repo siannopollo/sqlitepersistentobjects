@@ -19,6 +19,7 @@
 	NSData*		rectData;
 	
 	NSNumber*	number;
+	NSNumber*	transientNumber;
 	NSDate*		date;
 	BasicData*	basic;
 }
@@ -26,6 +27,7 @@
 @property(assign) NSData* unsignedArrayData;
 @property(assign) NSData* rectData;
 @property(assign) NSNumber* number;
+@property(assign) NSNumber* transientNumber;
 @property(assign) NSDate* date;
 @property(assign) BasicData* basic;
 @end

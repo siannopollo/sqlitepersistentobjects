@@ -97,6 +97,7 @@ NSMutableArray *checkedTables;
 	}
 	return ret;
 }
+
 + (void)clearCache
 {
 	if(objectMap != nil)
@@ -106,7 +107,13 @@ NSMutableArray *checkedTables;
 		[checkedTables removeAllObjects];
 	
 }
+
 +(NSArray *)indices
+{
+	return nil;
+}
+
++(NSArray *)transients
 {
 	return nil;
 }
@@ -724,6 +731,9 @@ NSMutableArray *checkedTables;
 		}
 	}
 	
+	NSArray *theTransients = [[self class] transients];
+    if (theTransients == nil) theTransients = [[NSArray alloc] init];
+	
 	if (dirty)
 	{
 		dirty = NO;
@@ -763,6 +773,8 @@ NSMutableArray *checkedTables;
 		NSDictionary *props = [[self class] propertiesWithEncodedTypes];
 		for (NSString *propName in props)
 		{
+			if ([theTransients containsObject:propName]) continue;
+
 			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 			NSString *className = @"";
 			if ([propType hasPrefix:@"@"])
@@ -779,7 +791,7 @@ NSMutableArray *checkedTables;
 		sqlite3_stmt *stmt;
 		int result = sqlite3_prepare_v2( database, [updateSQL UTF8String], -1, &stmt, nil);
 		
-		
+		// if sql statement bound ok, now bind the column values
 		if (result == SQLITE_OK)
 		{
 			int colIndex = 1;
@@ -788,6 +800,8 @@ NSMutableArray *checkedTables;
 			props = [[self class] propertiesWithEncodedTypes];
 			for (NSString *propName in props)
 			{
+				if ([theTransients containsObject:propName]) continue;
+
 				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 				NSString *className = propType;
 				if ([propType hasPrefix:@"@"])
@@ -1269,6 +1283,8 @@ NSMutableArray* recursionCheck;
 }
 +(void)tableCheck
 {
+    NSArray *theTransients = [[self class] transients];
+    if (theTransients == nil) theTransients = [[NSArray alloc] init];
 	
 	if (checkedTables == nil)
 		checkedTables = [[NSMutableArray alloc] init];
@@ -1284,7 +1300,10 @@ NSMutableArray* recursionCheck;
 		
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 		{ 
+			if ([theTransients containsObject:oneProp]) continue;
+
 			NSString *propName = [oneProp stringAsSQLColumnName];
+
 			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:oneProp];
 			// Integer Types
 			if ([propType isEqualToString:@"i"] || // int
@@ -1411,6 +1430,8 @@ NSMutableArray* recursionCheck;
 		NSArray *tableCols = [self tableColumns];
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 		{ 
+			if ([theTransients containsObject:oneProp]) continue;
+
 			NSString *propName = [oneProp stringAsSQLColumnName];
 			if (![tableCols containsObject:propName])
 			{

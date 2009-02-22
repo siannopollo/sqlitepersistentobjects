@@ -2,12 +2,17 @@
 
 @implementation Post
 
-@synthesize title, text;
+@synthesize title, text, transientBit;
 
 DECLARE_PROPERTIES(
 	DECLARE_PROPERTY(@"title", @"@\"NSString\""),
 	DECLARE_PROPERTY(@"text", @"@\"NSString\"")
 )
+
++(NSArray *)transients
+{
+	return [NSArray arrayWithObject:@"transientBit"];
+}
 
 - (void)dealloc
 {
