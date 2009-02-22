@@ -20,6 +20,8 @@ No. But most can. This currently does not support properties that are c-strings,
 
 Classes that don't have direct support (the ones listed above or any that you add), will use NSObject's persistence mechanism, which archives the object into a BLOB using an NSKeyedArchiver. This is inefficient for some objects because you can't search or compare on these fields, but at least most object can be persisted. Some classes like NSImage, this method actually works quite well and there's probably no reason to add a specific category.
 
+There is also support for marking columns as transient, so that they will not be persisted.
+
 HOW DO I USE IT?
 
 
@@ -55,6 +57,7 @@ Or, you could specify the exact criteria like this:
 PeristablePerson *joeSmith = [PersistablePerson findFirstByCriteria:@"WHERE last_name = 'Smith' AND first_name = 'Joe'];
 
 Notice that the camel case word divisions (marked by capital letters) got changed into an underscore, so if you want to use findByCriteria: or findFirstByCriteria: you have to make sure you get the column names correct. I plan on adding additional dynamic class methods to allow searching based on multiple criteria, but for now, if you want to search on more than one field you have to manually specify the criteria. Don't worry, it's not hard.
+
 CAN I CREATE INDEXES?
 
 
@@ -81,6 +84,18 @@ HOW IS THIS LICENSED
 
 
 It's a very liberal license. You can use it however you want, without attribution, in any software commercial or otherwise. You are not required to contribute back your changes (although they are certainly welcome), nor are you required to distribute your changed version. The only restriction that I place on this is that if you distribute the source code, modified or unmodified, that you leave my original comments, copyright notice, and contact information, and ask that you comment your changes.
+
+HOW TO MARK FIELDS AS TRANSIENT
+
+In a similar way to the indices facility above, override the class method transients to return an NSArray of fields that will not be persisted.
+
+For example:
+
++(NSArray *)transients
+{
+	return [NSArray arrayWithObject:@"transientNumber"];
+}
+
 IS IT FULLY FUNCTIONAL?
 
 
