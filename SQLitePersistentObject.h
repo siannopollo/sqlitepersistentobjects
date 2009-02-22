@@ -89,6 +89,12 @@
  */
 +(NSArray *)indices;
 
+/*!
+ This method should be overridden by subclasses in order to specify transient properties on the underlying table. 
+ @result Should return an array of property names to be ignored.  These are case sensitive, and the values must match the value of property names
+ */
++(NSArray *)transients;
+
 // This method returns a list of the names of thecolumns actually used in the database 
 // table backing this class. It's used to make sure that all properties have a corresponding column 
 +(NSArray *)tableColumns;
