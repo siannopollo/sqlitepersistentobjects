@@ -86,10 +86,39 @@
 	STAssertTrue([memory areAllPropertiesEqual:database], @"%@", [memory description]);
 }
 
+- (void)assertIndex:(NSString *) expectedIndex forTable: (NSString *) tableName exists: (BOOL) indexExists
+{
+	sqlite3 *database = [_manager database];
+
+	BOOL expectedIndexFound = NO;
+	NSString *idxQuery = [NSString stringWithFormat:@"SELECT NAME,SQL FROM SQLITE_MASTER WHERE TBL_NAME='%@' AND TYPE='index'",
+						  tableName];
+	sqlite3_stmt *statement;
+	if (sqlite3_prepare_v2(database, [idxQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
+	{
+		if (sqlite3_step(statement) == SQLITE_ROW) 
+		{
+			NSString *indexName = [NSString stringWithUTF8String:(char *)sqlite3_column_text(statement, 0)];
+			if ([expectedIndex isEqualTo:indexName])
+				expectedIndexFound = YES;
+		}
+	}			
+	STAssertTrue(expectedIndexFound == indexExists, @"Failed to find expected index '%@'", expectedIndex);	
+}
+
+
 - (void)testShouldSaveAndLoadWhenObjectContainsData
 {
 	[self saveAndLoadWhenObjectContainsDataWithClass: [BasicData class]];
+	
+	[self assertIndex:nil forTable:[BasicData tableName] exists:NO];
+	
 	[self saveAndLoadWhenObjectContainsDataWithClass: [NSDataContainer class]];
+
+	// TODO: use one routine to derive index name here and in the main code so that changes to the naming routine do not cause a problem
+	[self assertIndex:@"n_s_data_container_number" forTable:[NSDataContainer tableName] exists:YES];
+	
+	
 	[self saveAndLoadWhenObjectContainsDataWithClass: [Collections class]];
 	[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 	

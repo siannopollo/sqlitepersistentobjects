@@ -12,6 +12,12 @@
 
 @synthesize number, date, basic;
 
++(NSArray *)indices
+{
+	NSArray *index1 = [NSArray arrayWithObject:@"number"];
+	return [NSArray arrayWithObject:index1];
+}
+
 -(NSData*) unsignedArrayData
 {
 	return [[NSData alloc] initWithBytes:unsignedArray length:sizeof(unsigned)*100];
