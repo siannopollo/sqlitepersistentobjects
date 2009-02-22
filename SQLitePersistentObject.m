@@ -392,7 +392,7 @@ NSMutableArray *checkedTables;
 											Class objectClass = objc_lookUpClass([objectClassName UTF8String]);
 											if ([objectClass shouldBeStoredInBlob])
 											{
-												NSData *data = [NSData dataWithBytes:sqlite3_column_blob(setStmt, 3) length:sqlite3_column_bytes(setStmt, 3)];
+												NSData *data = [NSData dataWithBytes:sqlite3_column_blob(setStmt, 2) length:sqlite3_column_bytes(setStmt, 2)];
 												id theObject = [objectClass objectWithSQLBlobRepresentation:data];
 												[set addObject:theObject];
 											}
@@ -442,7 +442,7 @@ NSMutableArray *checkedTables;
 											Class objectClass = objc_lookUpClass([objectClassName UTF8String]);
 											if ([objectClass shouldBeStoredInBlob])
 											{
-												NSData *data = [NSData dataWithBytes:sqlite3_column_blob(arrayStmt, 3) length:sqlite3_column_bytes(arrayStmt, 3)];
+												NSData *data = [NSData dataWithBytes:sqlite3_column_blob(arrayStmt, 2) length:sqlite3_column_bytes(arrayStmt, 2)];
 												id theObject = [objectClass objectWithSQLBlobRepresentation:data];
 												[array addObject:theObject];
 											}
@@ -865,14 +865,14 @@ NSMutableArray *checkedTables;
 											if ([[oneObject class] shouldBeStoredInBlob])
 											{
 												NSData *data = [oneObject sqlBlobRepresentationOfSelf];
-												sqlite3_bind_blob(stmt, colIndex++, [data bytes], [data length], NULL);
+												sqlite3_bind_blob(xStmt, 1, [data bytes], [data length], NULL);
 											}
 											else
 											{
 												if ([[oneObject class] shouldBeStoredInBlob])
 												{
 													NSData *data = [oneObject sqlBlobRepresentationOfSelf];
-													sqlite3_bind_blob(stmt, colIndex++, [data bytes], [data length], NULL);
+													sqlite3_bind_blob(xStmt, 1, [data bytes], [data length], NULL);
 												}
 												else
 													sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);	
@@ -912,7 +912,7 @@ NSMutableArray *checkedTables;
 											if ([[oneObject class] shouldBeStoredInBlob])
 											{
 												NSData *data = [oneObject sqlBlobRepresentationOfSelf];
-												sqlite3_bind_blob(stmt, colIndex++, [data bytes], [data length], NULL);
+												sqlite3_bind_blob(xStmt, 1, [data bytes], [data length], NULL);
 											}
 											else
 												sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);
@@ -949,7 +949,7 @@ NSMutableArray *checkedTables;
 											if ([[oneObject class] shouldBeStoredInBlob])
 											{
 												NSData *data = [oneObject sqlBlobRepresentationOfSelf];
-												sqlite3_bind_blob(stmt, colIndex++, [data bytes], [data length], NULL);
+												sqlite3_bind_blob(xStmt, 1, [data bytes], [data length], NULL);
 											}
 											else
 												sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);
