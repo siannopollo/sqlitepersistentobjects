@@ -89,10 +89,10 @@
 	[self saveAndLoadWhenObjectContainsDataWithClass: [BasicData class]];
 	[self saveAndLoadWhenObjectContainsDataWithClass: [NSDataContainer class]];
 	[self saveAndLoadWhenObjectContainsDataWithClass: [Collections class]];
+	[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 	
 	//UNSUPPORTED OPERATIONS
 	//[self saveAndLoadWhenObjectContainsDataWithClass: [NestedCollections class]];
-	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
 }
 
 - (void)testShouldKeepObjectReferenceInMemoryMapWhenLoading

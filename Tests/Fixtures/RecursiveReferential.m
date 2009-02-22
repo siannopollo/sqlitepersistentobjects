@@ -25,4 +25,9 @@
 	self.ref.ref = self;
 }
 
+- (BOOL)isEqual:(id)object
+{
+	return [object class] == [self class] && [(RecursiveReferential*)object pk] == self.pk;
+}
+
 @end
