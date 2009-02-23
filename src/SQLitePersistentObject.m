@@ -295,10 +295,10 @@ NSMutableArray *checkedTables;
 						
 					{
 						const char *colVal = (const char *)sqlite3_column_text(statement, i);
-						NSString *colValString = [NSString stringWithUTF8String:colVal];
+						
 						if (colVal != nil)
 						{
-							
+							NSString *colValString = [NSString stringWithUTF8String:colVal];
 							if ([colValString holdsFloatingPointValue])
 							{
 								NSNumber *number = [NSNumber numberWithDouble:[colValString doubleValue]];
