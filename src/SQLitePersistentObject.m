@@ -115,7 +115,7 @@ NSMutableArray *checkedTables;
 
 +(NSArray *)transients
 {
-	return nil;
+	return [NSMutableArray array];
 }
 
 +(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString;
@@ -732,7 +732,6 @@ NSMutableArray *checkedTables;
 	}
 	
 	NSArray *theTransients = [[self class] transients];
-    if (theTransients == nil) theTransients = [[NSArray alloc] init];
 	
 	if (dirty)
 	{
@@ -1284,7 +1283,6 @@ NSMutableArray* recursionCheck;
 +(void)tableCheck
 {
     NSArray *theTransients = [[self class] transients];
-    if (theTransients == nil) theTransients = [[NSArray alloc] init];
 	
 	if (checkedTables == nil)
 		checkedTables = [[NSMutableArray alloc] init];
