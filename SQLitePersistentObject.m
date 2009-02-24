@@ -66,7 +66,7 @@ static id findByMethodImp(id self, SEL _cmd, id value)
 + (void)tableCheck;
 - (void)setPk:(int)newPk;
 + (NSString *)classNameForTableName:(NSString *)theTable;
-+ (void)setUpDynamicMethods;
+//+ (void)setUpDynamicMethods;
 - (void)makeClean;
 - (void)markDirty;
 - (BOOL)isDirty;
@@ -1415,7 +1415,7 @@ NSMutableArray* recursionCheck;
 		if (sqlite3_exec (database, "CREATE TABLE IF NOT EXISTS SQLITESEQUENCE (name TEXT PRIMARY KEY, seq INTEGER)", NULL, NULL, &errmsg) != SQLITE_OK)		
 			NSLog(@"Error Message: %s", errmsg);
 		
-		NSMutableString *addSequenceSQL = [NSMutableString stringWithFormat:@"INSERT INTO SQLITESEQUENCE (name,seq) VALUES ('%@', 0)", [[self class] tableName]];
+		NSMutableString *addSequenceSQL = [NSMutableString stringWithFormat:@"INSERT OR REPLACE INTO SQLITESEQUENCE (name,seq) VALUES ('%@', 0)", [[self class] tableName]];
 		if (sqlite3_exec (database, [addSequenceSQL UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)		
 			NSLog(@"Error Message: %s", errmsg);
 		
