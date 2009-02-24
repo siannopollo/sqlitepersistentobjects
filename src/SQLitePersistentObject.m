@@ -188,12 +188,36 @@ NSMutableArray *checkedTables;
 			{
 				if (cascade)
 				{
-					Class fkClass = objc_lookUpClass([prop UTF8String]);
-					NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
-					// Suppress the error if there was one: it's faster than checking to see if the table exists. 
-					// It may not if the property was used to store strings or another storage class but never
-					// a subclass of SQLitePersistentObject
-					sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
+					
+					NSString *xRefLoopQuery = [NSString stringWithFormat:@"select fk_table_name, fk from %@_%@ where parent_pk = %d", [[self class] tableName], [prop stringAsSQLColumnName], inPk];
+
+					sqlite3_stmt *xLoopStmt;
+					if (sqlite3_prepare_v2( database, [xRefLoopQuery UTF8String], -1, &xLoopStmt, NULL) == SQLITE_OK)
+					{
+						while (sqlite3_step(xLoopStmt) == SQLITE_ROW)
+						{
+							const unsigned char *fk_table = sqlite3_column_text(xLoopStmt, 0);
+							int fk_value = sqlite3_column_int(xLoopStmt, 1);
+							if (fk_table != NULL)
+							{
+								NSString *fkTableString = [NSString stringWithUTF8String:(const char *)fk_table];
+								NSString *xRefDeleteQuery = [NSString stringWithFormat:@"delete from %@ where pk = %d",fkTableString, fk_value];
+								
+								if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+									NSLog(@"Error deleting foreign key rows in table: %s", errmsg);
+								sqlite3_free(errmsg);
+							}
+							
+						}
+					}
+					sqlite3_finalize(xLoopStmt);
+					//					
+					//					Class fkClass = objc_lookUpClass([prop UTF8String]);
+					//					NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
+					//					// Suppress the error if there was one: it's faster than checking to see if the table exists. 
+					//					// It may not if the property was used to store strings or another storage class but never
+					//					// a subclass of SQLitePersistentObject
+					//					sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
 					
 				}
 				
@@ -526,7 +550,7 @@ NSMutableArray *checkedTables;
 				}
 			}
 			[oneItem makeClean];
-
+			
 			[ret addObject:oneItem];
 			[oneItem release];
 		}
@@ -707,7 +731,6 @@ NSMutableArray *checkedTables;
 					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
 						if ([theProperty isDirty])
 							dirty = YES;
-					
 				}
 				else
 				{
@@ -773,7 +796,7 @@ NSMutableArray *checkedTables;
 		for (NSString *propName in props)
 		{
 			if ([theTransients containsObject:propName]) continue;
-
+			
 			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 			NSString *className = @"";
 			if ([propType hasPrefix:@"@"])
@@ -800,7 +823,7 @@ NSMutableArray *checkedTables;
 			for (NSString *propName in props)
 			{
 				if ([theTransients containsObject:propName]) continue;
-
+				
 				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
 				NSString *className = propType;
 				if ([propType hasPrefix:@"@"])
@@ -1078,14 +1101,14 @@ NSMutableArray* recursionCheck;
 			   )
 				continue;
 			
-//			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
-//			[desc appendString:@"\nProperty was not equal:"];
-//			[desc appendString:prop];
-//			[desc appendString:@" = "];
-//			[desc appendString:[myProperty description]];
-//			[desc appendString:@" was not equal to "];
-//			[desc appendString:[theirProperty description]];
-//			NSLog(desc);
+			//			NSMutableString *desc = [[NSMutableString alloc]initWithCapacity:9999];
+			//			[desc appendString:@"\nProperty was not equal:"];
+			//			[desc appendString:prop];
+			//			[desc appendString:@" = "];
+			//			[desc appendString:[myProperty description]];
+			//			[desc appendString:@" was not equal to "];
+			//			[desc appendString:[theirProperty description]];
+			//			NSLog(desc);
 			returnValue = FALSE;
 		}
 		
@@ -1299,9 +1322,9 @@ NSMutableArray* recursionCheck;
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 		{ 
 			if ([theTransients containsObject:oneProp]) continue;
-
+			
 			NSString *propName = [oneProp stringAsSQLColumnName];
-
+			
 			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:oneProp];
 			// Integer Types
 			if ([propType isEqualToString:@"i"] || // int
@@ -1429,7 +1452,7 @@ NSMutableArray* recursionCheck;
 		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
 		{ 
 			if ([theTransients containsObject:oneProp]) continue;
-
+			
 			NSString *propName = [oneProp stringAsSQLColumnName];
 			if (![tableCols containsObject:propName])
 			{
