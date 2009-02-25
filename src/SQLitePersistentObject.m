@@ -33,9 +33,17 @@ static id averageMethodImp(id self, SEL _cmd, id value)
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
 	NSRange theRange = NSMakeRange(9, [methodBeingCalled length] - 9);
 	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-	NSLog(@"Property: %@", property);
 	NSString *query = [NSString stringWithFormat:@"select avg(%@) from %@", [property stringAsSQLColumnName], [self tableName]];
-	NSLog(@"query: %@", query);
+	double avg = [self performSQLAggregation:query];
+	return [NSNumber numberWithDouble:avg];
+}
+static id averageMethodByCriteriaImp(id self, SEL _cmd, id value)
+{
+	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
+	NSRange criteriaRange = [methodBeingCalled rangeOfString:@"WithCriteria"];
+	NSRange theRange = NSMakeRange(9, criteriaRange.location - 9);
+	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+	NSString *query = [NSString stringWithFormat:@"select avg(%@) from %@ %@", [property stringAsSQLColumnName], [self tableName], value];
 	double avg = [self performSQLAggregation:query];
 	return [NSNumber numberWithDouble:avg];
 }
@@ -44,9 +52,17 @@ static id sumMethodImp(id self, SEL _cmd, id value)
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
 	NSRange theRange = NSMakeRange(5, [methodBeingCalled length] - 5);
 	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-	NSLog(@"Property: %@", property);
 	NSString *query = [NSString stringWithFormat:@"select sum(%@) from %@", [property stringAsSQLColumnName], [self tableName]];
-	NSLog(@"query: %@", query);
+	double avg = [self performSQLAggregation:query];
+	return [NSNumber numberWithDouble:avg];
+}
+static id sumMethodByCriteriaImp(id self, SEL _cmd, id value)
+{
+	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
+	NSRange criteriaRange = [methodBeingCalled rangeOfString:@"WithCriteria"];
+	NSRange theRange = NSMakeRange(5, criteriaRange.location - 5);
+	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+	NSString *query = [NSString stringWithFormat:@"select sum(%@) from %@ %@", [property stringAsSQLColumnName], [self tableName], value];
 	double avg = [self performSQLAggregation:query];
 	return [NSNumber numberWithDouble:avg];
 }
@@ -1162,7 +1178,7 @@ NSMutableArray* recursionCheck;
 		const char *methodName = sel_getName(theMethod);
 		NSString *methodBeingCalled = [[NSString alloc] initWithUTF8String:methodName];
 		//	NSString *methodBeingCalled = [NSString stringWithUTF8String:methodName];
-	
+		
 		if ([methodBeingCalled hasPrefix:@"findBy"])
 		{
 			NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
@@ -1209,31 +1225,71 @@ NSMutableArray* recursionCheck;
 			else
 				return [super resolveClassMethod:theMethod];
 		}
+		// TODO: This is due for some heavy refactoring - too much copy & paste going on...
 		else if ([methodBeingCalled hasPrefix:@"averageOf"])
 		{
-			NSRange theRange = NSMakeRange(9, [methodBeingCalled length] - 9);
-			NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-			NSLog(@"Property: %@", property);
-			NSDictionary *properties = [self propertiesWithEncodedTypes];
-			if ([[properties allKeys] containsObject:property])
+			NSRange criteriaRange = [methodBeingCalled rangeOfString:@"WithCriteria"];
+			
+			if (criteriaRange.location == NSNotFound)
 			{
-				SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
-				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-				return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) averageMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+				NSLog(@"Method Being Called: %@", methodBeingCalled);
+				NSRange theRange = NSMakeRange(9, [methodBeingCalled length] - 9);
+				NSLog(@"Range: {%d, %d}", theRange.location, theRange.length);
+				NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+				NSLog(@"Property: %@", property);
+				NSDictionary *properties = [self propertiesWithEncodedTypes];
+				if ([[properties allKeys] containsObject:property])
+				{
+					SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+					Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+					return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) averageMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+				}
+			}
+			else
+			{
+				NSRange theRange = NSMakeRange(9, criteriaRange.location - 9);
+				NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+				NSDictionary *properties = [self propertiesWithEncodedTypes];
+				if ([[properties allKeys] containsObject:property])
+				{
+					SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+					Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+					return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) averageMethodByCriteriaImp, "@@:@@")) ? YES : [super resolveClassMethod:theMethod];
+				}
+				
 			}
 		}
 		else if ([methodBeingCalled hasPrefix:@"sumOf"])
 		{
-			NSRange theRange = NSMakeRange(5, [methodBeingCalled length] - 5);
-			NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-			NSLog(@"Property: %@", property);
-			NSDictionary *properties = [self propertiesWithEncodedTypes];
-			if ([[properties allKeys] containsObject:property])
+			NSRange criteriaRange = [methodBeingCalled rangeOfString:@"WithCriteria"];
+			
+			if (criteriaRange.location == NSNotFound)
 			{
-				SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
-				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-				return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) sumMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+				// sumMethodByCriteriaImp
+				NSRange theRange = NSMakeRange(5, [methodBeingCalled length] - 5);
+				NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+				
+				NSDictionary *properties = [self propertiesWithEncodedTypes];
+				if ([[properties allKeys] containsObject:property])
+				{
+					SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+					Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+					return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) sumMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+				}
 			}
+			else
+			{
+				NSRange theRange = NSMakeRange(5, criteriaRange.location - 5);
+				NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+				NSDictionary *properties = [self propertiesWithEncodedTypes];
+				if ([[properties allKeys] containsObject:property])
+				{
+					SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+					Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+					return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) sumMethodByCriteriaImp, "@@:@")) ? YES : [super resolveClassMethod:theMethod];
+				}
+			}
+			
 		}
 		return [super resolveClassMethod:theMethod];
 	}
