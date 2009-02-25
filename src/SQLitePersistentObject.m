@@ -28,13 +28,35 @@
 #import <objc/objc-class.h>
 #endif
 
+static id averageMethodImp(id self, SEL _cmd, id value)
+{
+	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
+	NSRange theRange = NSMakeRange(9, [methodBeingCalled length] - 9);
+	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+	NSLog(@"Property: %@", property);
+	NSString *query = [NSString stringWithFormat:@"select avg(%@) from %@", [property stringAsSQLColumnName], [self tableName]];
+	NSLog(@"query: %@", query);
+	double avg = [self performSQLAggregation:query];
+	return [NSNumber numberWithDouble:avg];
+}
+static id sumMethodImp(id self, SEL _cmd, id value)
+{
+	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
+	NSRange theRange = NSMakeRange(5, [methodBeingCalled length] - 5);
+	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+	NSLog(@"Property: %@", property);
+	NSString *query = [NSString stringWithFormat:@"select sum(%@) from %@", [property stringAsSQLColumnName], [self tableName]];
+	NSLog(@"query: %@", query);
+	double avg = [self performSQLAggregation:query];
+	return [NSNumber numberWithDouble:avg];
+}
 static id findByMethodImp(id self, SEL _cmd, id value)
 {
 	NSString *methodBeingCalled = [NSString stringWithUTF8String:sel_getName(_cmd)];
 	
 	NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
 	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-	
+	NSLog(@"Property: %@", property);
 	NSMutableString *queryCondition = [NSMutableString stringWithFormat:@"WHERE %@ like ", [property stringAsSQLColumnName]];
 	if (![value isKindOfClass:[NSNumber class]])
 		[queryCondition appendString:@"'"];
@@ -190,7 +212,7 @@ NSMutableArray *checkedTables;
 				{
 					
 					NSString *xRefLoopQuery = [NSString stringWithFormat:@"select fk_table_name, fk from %@_%@ where parent_pk = %d", [[self class] tableName], [prop stringAsSQLColumnName], inPk];
-
+					
 					sqlite3_stmt *xLoopStmt;
 					if (sqlite3_prepare_v2( database, [xRefLoopQuery UTF8String], -1, &xLoopStmt, NULL) == SQLITE_OK)
 					{
@@ -1133,55 +1155,89 @@ NSMutableArray* recursionCheck;
 #pragma mark NSObject Overrides 
 + (BOOL)resolveClassMethod:(SEL)theMethod
 {
-	NSString *methodBeingCalled = [NSString stringWithUTF8String: sel_getName(theMethod)];
-	
-	if ([methodBeingCalled hasPrefix:@"findBy"])
+	@synchronized(self)
 	{
-		NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
-		NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-		NSDictionary *properties = [self propertiesWithEncodedTypes];
-		if ([[properties allKeys] containsObject:property])
+		
+		
+		const char *methodName = sel_getName(theMethod);
+		NSString *methodBeingCalled = [[NSString alloc] initWithUTF8String:methodName];
+		//	NSString *methodBeingCalled = [NSString stringWithUTF8String:methodName];
+	
+		if ([methodBeingCalled hasPrefix:@"findBy"])
 		{
-			SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
-			
-			// Hardcore juju here, this is not documented anywhere in the runtime (at least no
-			// anywhere easy to find for a dope like me), but if you want to add a class method
-			// to a class, you have to get the metaclass object and add the clas to that. If you
-			// add the method
+			NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
+			NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+			NSDictionary *properties = [self propertiesWithEncodedTypes];
+			NSLog(@"Property: %@", property);	
+			if ([[properties allKeys] containsObject:property])
+			{
+				SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+				
+				// Hardcore juju here, this is not documented anywhere in the runtime (at least no
+				// anywhere easy to find for a dope like me), but if you want to add a class method
+				// to a class, you have to get the metaclass object and add the clas to that. If you
+				// add the method
 #ifndef TARGET_OS_COCOTRON
-			Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-			NSLog(@"classname: %@", [self className]);
-			return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@")) ? YES : [super resolveClassMethod:theMethod];
-#else			
-			if(class_getClassMethod([self class], newMethodSelector) != NULL) {
-				return [super resolveClassMethod:theMethod];
-			} else {
-				BOOL isNewMethod = YES;
 				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
-				
-				
-				struct objc_method *newMethod = calloc(sizeof(struct objc_method), 1);
-				struct objc_method_list *methodList = calloc(sizeof(struct objc_method_list)+sizeof(struct objc_method), 1);  
-				
-				newMethod->method_name = newMethodSelector;
-				newMethod->method_types = "@@:@";
-				newMethod->method_imp = (IMP) findByMethodImp;
-				
-				methodList->method_next = NULL;
-				methodList->method_count = 1;
-				memcpy(methodList->method_list, newMethod, sizeof(struct objc_method));
-				free(newMethod);
-				class_addMethods(selfMetaClass, methodList);
-				
-				assert(isNewMethod);
-				return YES;
-			}
+				return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) findByMethodImp, "@@:@")) ? YES : [super resolveClassMethod:theMethod];
+#else			
+				if(class_getClassMethod([self class], newMethodSelector) != NULL) {
+					return [super resolveClassMethod:theMethod];
+				} else {
+					BOOL isNewMethod = YES;
+					Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+					
+					
+					struct objc_method *newMethod = calloc(sizeof(struct objc_method), 1);
+					struct objc_method_list *methodList = calloc(sizeof(struct objc_method_list)+sizeof(struct objc_method), 1);  
+					
+					newMethod->method_name = newMethodSelector;
+					newMethod->method_types = "@@:@";
+					newMethod->method_imp = (IMP) findByMethodImp;
+					
+					methodList->method_next = NULL;
+					methodList->method_count = 1;
+					memcpy(methodList->method_list, newMethod, sizeof(struct objc_method));
+					free(newMethod);
+					class_addMethods(selfMetaClass, methodList);
+					
+					assert(isNewMethod);
+					return YES;
+				}
 #endif
+			}
+			else
+				return [super resolveClassMethod:theMethod];
 		}
-		else
-			return [super resolveClassMethod:theMethod];
+		else if ([methodBeingCalled hasPrefix:@"averageOf"])
+		{
+			NSRange theRange = NSMakeRange(9, [methodBeingCalled length] - 9);
+			NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+			NSLog(@"Property: %@", property);
+			NSDictionary *properties = [self propertiesWithEncodedTypes];
+			if ([[properties allKeys] containsObject:property])
+			{
+				SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+				return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) averageMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+			}
+		}
+		else if ([methodBeingCalled hasPrefix:@"sumOf"])
+		{
+			NSRange theRange = NSMakeRange(5, [methodBeingCalled length] - 5);
+			NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
+			NSLog(@"Property: %@", property);
+			NSDictionary *properties = [self propertiesWithEncodedTypes];
+			if ([[properties allKeys] containsObject:property])
+			{
+				SEL newMethodSelector = sel_registerName([methodBeingCalled UTF8String]);
+				Class selfMetaClass = objc_getMetaClass([[self className] UTF8String]);
+				return (class_addMethod(selfMetaClass, newMethodSelector, (IMP) sumMethodImp, "@@:")) ? YES : [super resolveClassMethod:theMethod];
+			}
+		}
+		return [super resolveClassMethod:theMethod];
 	}
-	return [super resolveClassMethod:theMethod];
+	return NO;
 }
 -(id)init
 {
