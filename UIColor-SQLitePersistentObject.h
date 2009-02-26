@@ -17,5 +17,4 @@
 + (NSString *)columnTypeForObjectStorage;
 + (BOOL)shouldBeStoredInBlob;
 @end
-
 #endif

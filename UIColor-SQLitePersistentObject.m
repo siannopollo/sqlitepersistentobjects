@@ -12,7 +12,6 @@
 #define kUIImageArchiverKey @"UIImage"
 
 @implementation UIColor(SQLitePersistence)
-
 + (id)objectWithSQLBlobRepresentation:(NSData *)data {
 	if (data == nil || [data length] == 0)
 		return nil;
@@ -24,7 +23,6 @@
 	
 	return ret;
 }
-
 - (NSData *)sqlBlobRepresentationOfSelf {
 	NSMutableData *data = [[NSMutableData alloc] init];
 	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
@@ -33,19 +31,15 @@
 	[archiver release];
 	return [data autorelease];
 }
-
 + (BOOL)canBeStoredInSQLite {
 	return YES;
 }
-
 + (NSString *)columnTypeForObjectStorage {
 	return kSQLiteColumnTypeBlob;	
 }
-
 + (BOOL)shouldBeStoredInBlob {
 	return YES;
 }
-
 @end
 
 #endif
