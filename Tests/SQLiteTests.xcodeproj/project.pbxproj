@@ -19,6 +19,7 @@
 		00B150940EFEF4290086D2EC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B150930EFEF4280086D2EC /* libsqlite3.0.dylib */; };
 		00DC746B0F22F388000D1CC6 /* NestedCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DC746A0F22F388000D1CC6 /* NestedCollections.m */; };
 		00DC746D0F22F391000D1CC6 /* TestDeleting.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DC746C0F22F391000D1CC6 /* TestDeleting.m */; };
+		377D48B40F58AAE3007D613B /* TestReversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 377D48B30F58AAE3007D613B /* TestReversion.m */; };
 		61992A130F47F9650052219A /* NSData-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 619929F60F47F9650052219A /* NSData-SQLitePersistence.m */; };
 		61992A140F47F9650052219A /* NSDate-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 619929F80F47F9650052219A /* NSDate-SQLitePersistence.m */; };
 		61992A150F47F9650052219A /* NSMutableArray-MultipleSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 619929FA0F47F9650052219A /* NSMutableArray-MultipleSort.m */; };
@@ -58,6 +59,7 @@
 		00DC746A0F22F388000D1CC6 /* NestedCollections.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NestedCollections.m; path = Fixtures/NestedCollections.m; sourceTree = "<group>"; };
 		00DC746C0F22F391000D1CC6 /* TestDeleting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestDeleting.m; path = Tests/TestDeleting.m; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		377D48B30F58AAE3007D613B /* TestReversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestReversion.m; path = Tests/TestReversion.m; sourceTree = "<group>"; };
 		619929F50F47F9650052219A /* NSData-SQLitePersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData-SQLitePersistence.h"; sourceTree = "<group>"; };
 		619929F60F47F9650052219A /* NSData-SQLitePersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData-SQLitePersistence.m"; sourceTree = "<group>"; };
 		619929F70F47F9650052219A /* NSDate-SQLitePersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate-SQLitePersistence.h"; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		00A18ECE0EE9460F0065BA6B /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				377D48B30F58AAE3007D613B /* TestReversion.m */,
 				00DC746C0F22F391000D1CC6 /* TestDeleting.m */,
 				00A625000F1F472A00696BD9 /* TestSavingAndLoading.m */,
 			);
@@ -300,6 +303,7 @@
 				61992A1E0F47F9650052219A /* SQLiteInstanceManager.m in Sources */,
 				61992A200F47F9650052219A /* SQLitePersistentObject.m in Sources */,
 				61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */,
+				377D48B40F58AAE3007D613B /* TestReversion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

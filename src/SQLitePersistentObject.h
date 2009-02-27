@@ -159,6 +159,22 @@
  */
 -(void)save;
 
+/*
+ * Reverts the object back to database state. Any changes that have been
+ * made since the object was loaded are undone.
+ */
+-(void)revert;
+
+/*
+ * Reverts the given field name back to its database state. 
+ */
+-(void)revertField:(NSString *)fieldName;
+
+/*
+ * Reverts an NSArray of field names back to their database states. 
+ */
+-(void)revertFields:(NSArray *)fieldNames;
+
 /*!
  Returns this objects primary key
  */
