@@ -54,7 +54,6 @@ static id aggregateMethodWithCriteriaImp(id self, SEL _cmd, id value)
 	
 	
 	NSString *query = [NSString stringWithFormat:@"select %@(%@) from %@ %@",operation, [property stringAsSQLColumnName], [self tableName], value];
-	NSLog(@"Query: %@", query);
 	double avg = [self performSQLAggregation:query];
 	return [NSNumber numberWithDouble:avg];
 }
@@ -68,7 +67,6 @@ static id findByMethodImp(id self, SEL _cmd, id value)
 	
 	NSRange theRange = NSMakeRange(6, [methodBeingCalled length] - 7);
 	NSString *property = [[methodBeingCalled substringWithRange:theRange] stringByLowercasingFirstLetter];
-	NSLog(@"Property: %@", property);
 	NSMutableString *queryCondition = [NSMutableString stringWithFormat:@"WHERE %@ like ", [property stringAsSQLColumnName]];
 	if (![value isKindOfClass:[NSNumber class]])
 		[queryCondition appendString:@"'"];
@@ -1221,7 +1219,6 @@ NSMutableArray* recursionCheck;
 			else
 				return [super resolveClassMethod:theMethod];
 		}
-		// TODO: This is due for some heavy refactoring - too much copy & paste going on...
 		else if ([methodBeingCalled rangeOfString:@"Of"].location != NSNotFound)
 		{
 			NSRange rangeOfOf = [methodBeingCalled rangeOfString:@"Of"];
