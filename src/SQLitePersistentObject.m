@@ -290,16 +290,14 @@ NSMutableArray *checkedTables;
 				SQLitePersistentObject *testObject = [objectMap objectForKey:mapKey];
 				if (testObject != nil)
 				{
-					[ret addObject:testObject];
+					[oneItem release];
+					[ret addObject: [testObject retain] ];
 					foundInMemory = YES;
 				}
 			}
 			
 			if(foundInMemory)
-			{
-				[oneItem release];
 				continue;
-			}
 			
 			[[self class] registerObjectInMemory:oneItem];
 			
