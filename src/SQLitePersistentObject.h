@@ -56,6 +56,7 @@
 	NSInteger	pk;	
 	BOOL		dirty;
 	BOOL		alreadySaving;
+	BOOL		alreadyDeleting;
 }
 
 /*!

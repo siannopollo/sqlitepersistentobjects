@@ -186,11 +186,12 @@
 {
 	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [BasicData class]];
 	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [NSDataContainer class]];
-	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [Collections class]];
+	[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [RecursiveReferential class]];
 	
 	//UNSUPPORTED OPERATIONS
+	//[self shouldMakeDirtyAndSaveAllModifiedPropertiesWhenObjectHasBeenModifiedAfterSavingWithClass: [Collections class]];
 	//[self saveAndLoadWhenObjectContainsDataWithClass: [NestedCollections class]];
-	//[self saveAndLoadWhenObjectContainsDataWithClass: [RecursiveReferential class]];
+	//
 }
 
 

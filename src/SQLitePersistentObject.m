@@ -190,76 +190,13 @@ NSMutableArray *checkedTables;
 {
 	if(inPk < 0)
 		return;
-	
-	[self tableCheck];
-	
-	//Unregister the object, to prevent it from being returned later if the PK is ever reused.
-	//We have to do this before the delete while we can still retrieve the object.
+
 	SQLitePersistentObject* objToDelete = [self findByPK:inPk];
 	if(objToDelete == nil)
 		return;
 	
-	[self unregisterObject:objToDelete];
+	[objToDelete deleteObjectCascade:cascade];
 	
-	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [self tableName], inPk];
-	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
-	char *errmsg = NULL;
-	if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-		NSLog(@"Error deleting row in table: %s", errmsg);
-	sqlite3_free(errmsg);
-	
-	NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
-	
-	for (NSString *prop in [theProps allKeys])
-	{
-		NSString *colType = [theProps valueForKey:prop];
-		if ([colType hasPrefix:@"@"])
-		{
-			NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
-			if (isNSDictionaryType(className) || isNSArrayType(className) || isNSSetType(className))
-			{
-				if (cascade)
-				{
-					
-					NSString *xRefLoopQuery = [NSString stringWithFormat:@"select fk_table_name, fk from %@_%@ where parent_pk = %d", [[self class] tableName], [prop stringAsSQLColumnName], inPk];
-					
-					sqlite3_stmt *xLoopStmt;
-					if (sqlite3_prepare_v2( database, [xRefLoopQuery UTF8String], -1, &xLoopStmt, NULL) == SQLITE_OK)
-					{
-						while (sqlite3_step(xLoopStmt) == SQLITE_ROW)
-						{
-							const unsigned char *fk_table = sqlite3_column_text(xLoopStmt, 0);
-							int fk_value = sqlite3_column_int(xLoopStmt, 1);
-							if (fk_table != NULL)
-							{
-								NSString *fkTableString = [NSString stringWithUTF8String:(const char *)fk_table];
-								NSString *xRefDeleteQuery = [NSString stringWithFormat:@"delete from %@ where pk = %d",fkTableString, fk_value];
-								
-								if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-									NSLog(@"Error deleting foreign key rows in table: %s", errmsg);
-								sqlite3_free(errmsg);
-							}
-							
-						}
-					}
-					sqlite3_finalize(xLoopStmt);
-					//					
-					//					Class fkClass = objc_lookUpClass([prop UTF8String]);
-					//					NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
-					//					// Suppress the error if there was one: it's faster than checking to see if the table exists. 
-					//					// It may not if the property was used to store strings or another storage class but never
-					//					// a subclass of SQLitePersistentObject
-					//					sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
-					
-				}
-				
-				NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self class] tableName], [prop stringAsSQLColumnName], inPk];
-				if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
-					NSLog(@"Error deleting from foreign key table: %s", errmsg);
-				sqlite3_free(errmsg);
-			}
-		}
-	}
 }
 +(SQLitePersistentObject *)findByPK:(int)inPk
 {
@@ -739,16 +676,17 @@ NSMutableArray *checkedTables;
         NSLog(@"Object of type '%@' seems to be uninitialised, perhaps init does not call super init.", [[self class] description] );
         return;
     }
+	
+	NSDictionary *props = [[self class] propertiesWithEncodedTypes];
     
 	if (!dirty)
 	{
 		// Check child and owned objects to see if any of them are dirty
 		// Just tell children and composed objects to save themselves
-		NSDictionary *props = [[self class] propertiesWithEncodedTypes];
 		
 		for (NSString *propName in props)
 		{
-			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
+			NSString *propType = [props objectForKey:propName];
 			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 			id theProperty = [self valueForKey:propName];
 			if ([propType hasPrefix:@"@"] ) // Object
@@ -822,12 +760,11 @@ NSMutableArray *checkedTables;
 		
 		NSMutableString *bindSQL = [NSMutableString string];
 		
-		NSDictionary *props = [[self class] propertiesWithEncodedTypes];
 		for (NSString *propName in props)
 		{
 			if ([theTransients containsObject:propName]) continue;
 			
-			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
+			NSString *propType = [props objectForKey:propName];
 			NSString *className = @"";
 			if ([propType hasPrefix:@"@"])
 				className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
@@ -849,12 +786,11 @@ NSMutableArray *checkedTables;
 			int colIndex = 1;
 			sqlite3_bind_int(stmt, colIndex++, pk);
 			
-			props = [[self class] propertiesWithEncodedTypes];
 			for (NSString *propName in props)
 			{
 				if ([theTransients containsObject:propName]) continue;
 				
-				NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:propName];
+				NSString *propType = [props objectForKey:propName];
 				NSString *className = propType;
 				if ([propType hasPrefix:@"@"])
 					className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
@@ -947,13 +883,7 @@ NSMutableArray *checkedTables;
 											}
 											else
 											{
-												if ([[oneObject class] shouldBeStoredInBlob])
-												{
-													NSData *data = [oneObject sqlBlobRepresentationOfSelf];
-													sqlite3_bind_blob(xStmt, 1, [data bytes], [data length], NULL);
-												}
-												else
-													sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);	
+												sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);	
 											}
 											
 											if (sqlite3_step(xStmt) != SQLITE_DONE)
@@ -994,8 +924,10 @@ NSMutableArray *checkedTables;
 											}
 											else
 												sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);
+											
 											if (sqlite3_step(xStmt) != SQLITE_DONE)
 												NSLog(@"Error inserting or updating cross-reference row");
+											
 											sqlite3_finalize(xStmt);
 											
 										}
@@ -1031,8 +963,10 @@ NSMutableArray *checkedTables;
 											}
 											else
 												sqlite3_bind_text(xStmt, 1, [[oneObject sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);
+											
 											if (sqlite3_step(xStmt) != SQLITE_DONE)
 												NSLog(@"Error inserting or updating cross-reference row");
+											
 											sqlite3_finalize(xStmt);
 										}
 									}
@@ -1130,10 +1064,89 @@ NSMutableArray *checkedTables;
 {
 	[self deleteObjectCascade:NO];
 }
-
 -(void)deleteObjectCascade:(BOOL)cascade
 {
-	[[self class] deleteObject:[self pk] cascade:cascade];
+	if(pk < 0)
+		return;
+	
+	if(alreadyDeleting)
+		return;
+	alreadyDeleting = TRUE;
+	//Primary key set implies object already saved and table checked
+	//[self tableCheck];
+	
+	[[self class] unregisterObject:self];
+	
+	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [[self class] tableName], pk];
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	char *errmsg = NULL;
+	if (sqlite3_exec (database, [deleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+		NSLog(@"Error deleting row in table: %s", errmsg);
+	sqlite3_free(errmsg);
+	
+	NSDictionary *theProps = [[self class] propertiesWithEncodedTypes];
+	
+	for (NSString *prop in [theProps allKeys])
+	{
+		NSString *colType = [theProps valueForKey:prop];
+		if ([colType hasPrefix:@"@"])
+		{
+			NSString *className = [colType substringWithRange:NSMakeRange(2, [colType length]-3)];
+			if (isCollectionType(className))
+			{
+				if (cascade)
+				{
+					
+					NSString *xRefLoopQuery = [NSString stringWithFormat:@"select fk_table_name, fk from %@_%@ where parent_pk = %d", [[self class] tableName], [prop stringAsSQLColumnName], pk];
+					
+					sqlite3_stmt *xLoopStmt;
+					if (sqlite3_prepare_v2( database, [xRefLoopQuery UTF8String], -1, &xLoopStmt, NULL) == SQLITE_OK)
+					{
+						while (sqlite3_step(xLoopStmt) == SQLITE_ROW)
+						{
+							const unsigned char *fk_table = sqlite3_column_text(xLoopStmt, 0);
+							int fk_value = sqlite3_column_int(xLoopStmt, 1);
+							if (fk_table != NULL)
+							{
+								NSString *fkTableString = [NSString stringWithUTF8String:(const char *)fk_table];
+								NSString *xRefDeleteQuery = [NSString stringWithFormat:@"delete from %@ where pk = %d",fkTableString, fk_value];
+								
+								if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+									NSLog(@"Error deleting foreign key rows in table: %s", errmsg);
+								sqlite3_free(errmsg);
+							}
+							
+						}
+					}
+					sqlite3_finalize(xLoopStmt);
+					//					
+					//					Class fkClass = objc_lookUpClass([prop UTF8String]);
+					//					NSString *fkDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE PK IN (SELECT FK FROM %@_%@_XREF WHERE pk = %d)",  [fkClass tableName],  [[self class] tableName],  [prop stringAsSQLColumnName], inPk];
+					//					// Suppress the error if there was one: it's faster than checking to see if the table exists. 
+					//					// It may not if the property was used to store strings or another storage class but never
+					//					// a subclass of SQLitePersistentObject
+					//					sqlite3_exec (database, [fkDeleteQuery UTF8String], NULL, NULL, NULL);
+					
+				}
+				
+				NSString *xRefDeleteQuery = [NSString stringWithFormat:@"DELETE FROM %@_%@ WHERE parent_pk = %d",  [[self class] tableName], [prop stringAsSQLColumnName], pk];
+				if (sqlite3_exec (database, [xRefDeleteQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+					NSLog(@"Error deleting from foreign key table: %s", errmsg);
+				sqlite3_free(errmsg);
+			}
+			else
+			{
+				Class propClass = objc_lookUpClass([className UTF8String]);
+				if ([propClass isSubclassOfClass:[SQLitePersistentObject class]])
+				{
+					id theProperty = [self valueForKey:prop];
+					[theProperty deleteObjectCascade:TRUE];
+				}
+			}
+			
+		}
+	}
+	alreadyDeleting = FALSE;
 }
 
 - (NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter
@@ -1456,13 +1469,14 @@ NSMutableArray* recursionCheck;
 		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 		NSMutableString *createSQL = [NSMutableString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (pk INTEGER PRIMARY KEY",[self tableName]];
 		
-		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
+		NSDictionary* props = [[self class] propertiesWithEncodedTypes];
+		for (NSString *oneProp in props)
 		{ 
 			if ([theTransients containsObject:oneProp]) continue;
 			
 			NSString *propName = [oneProp stringAsSQLColumnName];
 			
-			NSString *propType = [[[self class] propertiesWithEncodedTypes] objectForKey:oneProp];
+			NSString *propType = [props objectForKey:oneProp];
 			// Integer Types
 			if ([propType isEqualToString:@"i"] || // int
 				[propType isEqualToString:@"I"] || // unsigned int
@@ -1586,7 +1600,7 @@ NSMutableArray* recursionCheck;
 		
 		// Now, make sure that every property has a corresponding column, alter the table for any that are missing
 		NSArray *tableCols = [self tableColumns];
-		for (NSString *oneProp in [[self class] propertiesWithEncodedTypes])
+		for (NSString *oneProp in props)
 		{ 
 			if ([theTransients containsObject:oneProp]) continue;
 			

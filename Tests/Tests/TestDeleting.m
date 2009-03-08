@@ -60,22 +60,26 @@ extern NSMutableArray* recursionCheck;
 					])
 					return TRUE;
 			}	
-			Class propClass = objc_lookUpClass([className UTF8String]);
 			
 			if(recursionCheck == nil )
 				recursionCheck = [[NSMutableArray alloc] init];
 			
-			[recursionCheck addObject:self];
 			
-			SQLitePersistentObject* childObject = [object valueForKey: prop];
-			if ([propClass isSubclassOfClass:[SQLitePersistentObject class]] &&
-				![recursionCheck containsObject:childObject]
-			)
+			Class propClass = objc_lookUpClass([className UTF8String]);
+			if ([propClass isSubclassOfClass:[SQLitePersistentObject class]])
 			{
-				if([self areThereAnyTracesOfObject:childObject cascade:cascade])
-					return TRUE;
+				SQLitePersistentObject* childObject = [object valueForKey: prop];
+				if(![recursionCheck containsObject:childObject])
+				{
+					[recursionCheck addObject:childObject];
+					if([self areThereAnyTracesOfObject:childObject cascade:cascade])
+					{
+						[recursionCheck removeObject:childObject];
+						return TRUE;
+					}
+					[recursionCheck removeObject:childObject];
+				}
 				
-				[recursionCheck removeObject:self];
 			}
 		}
 	}
@@ -131,12 +135,14 @@ extern NSMutableArray* recursionCheck;
 {
 	[self deleteObjectWithClass:[Collections class]];
 	[self deleteObjectWithClass:[NSDataContainer class]];
+	[self deleteObjectWithClass:[RecursiveReferential class]];
 }
 
 - (void)testShouldDeleteObjectAndCascade
 {
 	[self deleteObjectCascadeWithClass:[Collections class]];
 	[self deleteObjectCascadeWithClass:[NSDataContainer class]];
+	[self deleteObjectCascadeWithClass:[RecursiveReferential class]];
 }
 
 @end
