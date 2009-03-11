@@ -116,17 +116,23 @@ NSMutableArray *checkedTables;
 
 #pragma mark -
 #pragma mark Public Class Methods
-+ (double)performSQLAggregation: (NSString *)query
++ (double)performSQLAggregation: (NSString *)query, ...
 {
 	double ret = -1.0;
 	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 	
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, query);
+	NSString *queryString = [[NSString alloc] initWithFormat:query arguments:argumentList];
+	
 	sqlite3_stmt *stmt;
-	if (sqlite3_prepare_v2( database,  [query UTF8String], -1, &stmt, nil) == SQLITE_OK) {
+	if (sqlite3_prepare_v2( database,  [queryString UTF8String], -1, &stmt, nil) == SQLITE_OK) {
 		if (sqlite3_step(stmt) == SQLITE_ROW)
 			ret = sqlite3_column_double(stmt, 0);
 		sqlite3_finalize(stmt);
 	}
+	[queryString release];
 	return ret;
 }
 
@@ -150,9 +156,15 @@ NSMutableArray *checkedTables;
 	return [NSMutableArray array];
 }
 
-+(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString;
++(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString, ...
 {
-	NSArray *array = [self findByCriteria:criteriaString];
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, criteriaString);
+	NSString *queryString = [[NSString alloc] initWithFormat:criteriaString arguments:argumentList];
+	NSArray *array = [self findByCriteria:queryString];
+	[queryString release];
+	
 	if (array != nil)
 		if ([array count] > 0)
 			return [array objectAtIndex:0];
@@ -162,25 +174,31 @@ NSMutableArray *checkedTables;
 {
     return [self countByCriteria:@""];
 }
-+ (NSInteger)countByCriteria:(NSString *)criteriaString
++ (NSInteger)countByCriteria:(NSString *)criteriaString, ...
 {
-    [self tableCheck];
-    NSInteger countOfRecords;
-    countOfRecords = 0;
-    NSString *countQuery;
-    countQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@ %@", [self tableName], criteriaString];
+	[self tableCheck];
+	NSInteger countOfRecords;
+	countOfRecords = 0;
+	NSString *countQuery;
 	
-    sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
-    sqlite3_stmt *statement;
-    if (sqlite3_prepare_v2(database, [countQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
-    {
-        if (sqlite3_step(statement) == SQLITE_ROW)
-            countOfRecords = sqlite3_column_int(statement, 0);
-    } 
-    else NSLog(@"Error determining count of rows in table %@", [self  tableName]);
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, criteriaString);
+	NSString *queryString = [[NSString alloc] initWithFormat:criteriaString arguments:argumentList];
 	
-    sqlite3_finalize(statement);
-    return countOfRecords;
+	countQuery = [NSString stringWithFormat:@"SELECT COUNT(*) FROM %@ %@", [self tableName], queryString];
+	[queryString release];
+	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+	sqlite3_stmt *statement;
+	if (sqlite3_prepare_v2(database, [countQuery UTF8String], -1, &statement, nil) == SQLITE_OK) 
+	{
+		if (sqlite3_step(statement) == SQLITE_ROW)
+			countOfRecords = sqlite3_column_int(statement, 0);
+	} 
+	else NSLog(@"Error determining count of rows in table %@", [self  tableName]);
+	
+	sqlite3_finalize(statement);
+	return countOfRecords;
 }
 +(NSArray *)allObjects
 {
@@ -203,15 +221,21 @@ NSMutableArray *checkedTables;
 	return [self findFirstByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", inPk]];
 }
 
-+(NSArray *)findByCriteria:(NSString *)criteriaString
++(NSArray *)findByCriteria:(NSString *)criteriaString, ...
 {
-	
 	[[self class] tableCheck];
 	NSMutableArray *ret = [NSMutableArray array];
 	NSDictionary *theProps = [self propertiesWithEncodedTypes];
 	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 	
-	NSString *query = [NSString stringWithFormat:@"SELECT pk,* FROM %@ %@", [[self class] tableName], criteriaString];
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, criteriaString);
+	NSString *queryString = [[NSString alloc] initWithFormat:criteriaString arguments:argumentList];
+	
+	NSString *query = [NSString stringWithFormat:@"SELECT pk,* FROM %@ %@", [[self class] tableName], queryString];
+	[queryString release];
+	
 	sqlite3_stmt *statement;
 	if (sqlite3_prepare_v2( database, [query UTF8String], -1, &statement, NULL) == SQLITE_OK)
 	{
@@ -551,7 +575,7 @@ NSMutableArray *checkedTables;
 {
 	return [self pairedArraysForProperties:theProps withCriteria:@""];
 }
-+(NSArray *)pairedArraysForProperties:(NSArray *)theProps withCriteria:(NSString *)criteriaString
++(NSArray *)pairedArraysForProperties:(NSArray *)theProps withCriteria:(NSString *)criteriaString, ...
 {
 	NSMutableArray *ret = [NSMutableArray array];
 	[[self class] tableCheck];
@@ -563,7 +587,13 @@ NSMutableArray *checkedTables;
 	for (NSString *oneProp in theProps)
 		[query appendFormat:@", %@", [oneProp stringAsSQLColumnName]];
 	
-	[query appendFormat:@" FROM %@ %@ ORDER BY PK", [[self class] tableName], criteriaString];
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, criteriaString);
+	NSString *queryString = [[NSString alloc] initWithFormat:criteriaString arguments:argumentList];
+	
+	[query appendFormat:@" FROM %@ %@ ORDER BY PK", [[self class] tableName], queryString];
+	[queryString release];
 	
 	for (int i = 0; i <= [theProps count]; i++)
 		[ret addObject:[NSMutableArray array]];
@@ -1019,7 +1049,7 @@ NSMutableArray *checkedTables;
 /*
  * Reverts the given field name back to its database state. 
  */
--(void)revertField:(NSString *)fieldName
+-(void)revertProperty:(NSString *)propName
 {
 	if(![self existsInDB])
 	{
@@ -1029,15 +1059,15 @@ NSMutableArray *checkedTables;
 	
 	[[self class] unregisterObject:self];
 	SQLitePersistentObject* dbObj = [[self class] findByPK:[self pk]];
-	if([dbObj valueForKey:fieldName] != [self valueForKey:fieldName])
-		[self setValue:[dbObj valueForKey:fieldName] forKey:fieldName];
+	if([dbObj valueForKey:propName] != [self valueForKey:propName])
+		[self setValue:[dbObj valueForKey:propName] forKey:propName];
 	[[self class] registerObjectInMemory:self];
 }
 
 /*
  * Reverts an NSArray of field names back to their database states. 
  */
--(void)revertFields:(NSArray *)fieldNames
+-(void)revertProperties:(NSArray *)propNames
 {
 	if(![self existsInDB])
 	{
@@ -1047,7 +1077,7 @@ NSMutableArray *checkedTables;
 	
 	[[self class] unregisterObject:self];
 	SQLitePersistentObject* dbObj = [[self class] findByPK:[self pk]];
-	for(NSString *fieldName in fieldNames)
+	for(NSString *fieldName in propNames)
 	{
 		if([dbObj valueForKey:fieldName] != [self valueForKey:fieldName])
 			[self setValue:[dbObj valueForKey:fieldName] forKey:fieldName];
@@ -1149,17 +1179,29 @@ NSMutableArray *checkedTables;
 	alreadyDeleting = FALSE;
 }
 
-- (NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter
+- (NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter, ...
 {
 	NSString *q = [NSString stringWithFormat:@"WHERE %@ = \"%@\"", prop, [self memoryMapKey]];
 	if(filter)
-		q = [q stringByAppendingFormat:@" AND %@", filter];
+	{
+		// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+		va_list argumentList;
+		va_start(argumentList, filter);
+		NSString *queryString = [[NSString alloc] initWithFormat:filter arguments:argumentList];
+		q = [q stringByAppendingFormat:@" AND %@", queryString];
+		[queryString release];
+	}
+
 	return [cls findByCriteria:q];
 }
 
-- (NSArray *)findRelated:(Class)cls filter:(NSString *)filter
+- (NSArray *)findRelated:(Class)cls filter:(NSString *)filter, ...
 {
-	return [self findRelated:cls forProperty:[[self class] tableName] filter:filter];	
+	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
+	va_list argumentList;
+	va_start(argumentList, filter);
+	NSString *queryString = [[[NSString alloc] initWithFormat:filter arguments:argumentList] autorelease];
+	return [self findRelated:cls forProperty:[[self class] tableName] filter:queryString];	
 }
 
 - (NSArray *)findRelated:(Class)cls

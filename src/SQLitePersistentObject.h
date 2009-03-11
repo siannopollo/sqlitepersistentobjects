@@ -69,21 +69,21 @@
 /*!
  Find by criteria lets you specify the SQL conditions that will be used. The string passed in should start with the word WHERE. So, to search for a value with a pk value of 1, you would pass in @"WHERE pk = 1". When comparing to strings, the string comparison must be in single-quotes like this @"WHERE name = 'smith'".
  */
-+(NSArray *)findByCriteria:(NSString *)criteriaString;
-+(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString;
++(NSArray *)findByCriteria:(NSString *)criteriaString, ...;
++(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString, ...;
 +(SQLitePersistentObject *)findByPK:(int)inPk;
 +(NSArray *)allObjects;
 
 /*!
  Find related objects
  */
--(NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter;
--(NSArray *)findRelated:(Class)cls filter:(NSString *)filter;
+-(NSArray *)findRelated:(Class)cls forProperty:(NSString *)prop filter:(NSString *)filter, ...;
+-(NSArray *)findRelated:(Class)cls filter:(NSString *)filter, ...;
 -(NSArray *)findRelated:(Class)cls;
 
 
 // Allows easy execution of SQL commands that return a single row, good for getting sums and averages of a single property
-+ (double)performSQLAggregation: (NSString *)query;
++ (double)performSQLAggregation: (NSString *)query, ...;
 /*!
  This method should be overridden by subclasses in order to specify performance indices on the underyling table. 
  @result Should return an array of arrays. Each array represents one index, and should contain a list of the properties that the index should be created on, in the order the database should use to create it. This is case sensitive, and the values must match the value of property names
@@ -167,14 +167,14 @@
 -(void)revert;
 
 /*
- * Reverts the given field name back to its database state. 
+ * Reverts the given property (by name) back to its database state. 
  */
--(void)revertField:(NSString *)fieldName;
+-(void)revertProperty:(NSString *)propName;
 
 /*
- * Reverts an NSArray of field names back to their database states. 
+ * Reverts an NSArray of property names back to their database states. 
  */
--(void)revertFields:(NSArray *)fieldNames;
+-(void)revertProperties:(NSArray *)propNames;
 
 /*!
  Returns this objects primary key
@@ -191,11 +191,11 @@
 /*!
  This method will return paired mutable arrays (packed into an array) for each of the specified fields in the theProps array. The number of returned arrays will always be one greater than the number of values in theProps (assuming all of the passed values are valid fields), as the first mutable array will contain the primary key values for the object; the remainder of the arrays will correspond to the props in the same order they were passed in. The paired arrays will containe information at the same index about the same object. The values will be returned as formatted strings, as this method is intended for display in an iPhone table
  */
-+(NSArray *)pairedArraysForProperties:(NSArray *)theProps withCriteria:(NSString *)criteriaString;
++(NSArray *)pairedArraysForProperties:(NSArray *)theProps withCriteria:(NSString *)criteriaString, ...;
 +(NSArray *)pairedArraysForProperties:(NSArray *)theProps;
 
 + (NSInteger)count; 
-+ (NSInteger)countByCriteria:(NSString *)criteriaString;
++ (NSInteger)countByCriteria:(NSString *)criteriaString, ...;
 
 #ifdef TARGET_OS_COCOTRON
 + (NSArray *)getPropertiesList;

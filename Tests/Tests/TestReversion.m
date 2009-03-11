@@ -70,7 +70,7 @@
    
    int old = bd.b2;
    bd.b2 = 42;
-   [bd revertField:@"b2"];
+   [bd revertProperty:@"b2"];
    STAssertTrue(bd.b2 == old, @"Revert field method");
 }
 

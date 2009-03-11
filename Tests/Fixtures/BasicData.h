@@ -22,6 +22,7 @@
 	BOOL				b9;
 	float				b10;
 	double				b11;
+	double				b12;
 }
 
 @property int b1;
