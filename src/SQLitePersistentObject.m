@@ -1167,10 +1167,10 @@ NSMutableArray *checkedTables;
 			else
 			{
 				Class propClass = objc_lookUpClass([className UTF8String]);
-				if ([propClass isSubclassOfClass:[SQLitePersistentObject class]])
+				if ([propClass isSubclassOfClass:[SQLitePersistentObject class]] && cascade)
 				{
 					id theProperty = [self valueForKey:prop];
-					[theProperty deleteObjectCascade:TRUE];
+					[theProperty deleteObjectCascade:cascade];
 				}
 			}
 			
