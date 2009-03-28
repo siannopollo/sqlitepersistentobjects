@@ -1,5 +1,7 @@
 #import "GTMSenTestCase.h"
 #import "SQLitePersistentObject.h"
+#import "NSString-SQLiteColumnName.h"
+#import "SQLitePersistentObject-Testing.h"
 #import "SQLiteInstanceManager.h"
 #import "BasicData.h"
 #import "NSDataContainer.h"

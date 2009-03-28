@@ -35,6 +35,7 @@
 		61992A1E0F47F9650052219A /* SQLiteInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A0C0F47F9650052219A /* SQLiteInstanceManager.m */; };
 		61992A200F47F9650052219A /* SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A100F47F9650052219A /* SQLitePersistentObject.m */; };
 		61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A120F47F9650052219A /* UIImage-SQLitePersistence.m */; };
+		61A08F6B0F7DC002005362D4 /* SQLitePersistentObject-Testing.m in Sources */ = {isa = PBXBuildFile; fileRef = 61A08F6A0F7DC002005362D4 /* SQLitePersistentObject-Testing.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,8 @@
 		61992A100F47F9650052219A /* SQLitePersistentObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SQLitePersistentObject.m; sourceTree = "<group>"; };
 		61992A110F47F9650052219A /* UIImage-SQLitePersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-SQLitePersistence.h"; sourceTree = "<group>"; };
 		61992A120F47F9650052219A /* UIImage-SQLitePersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-SQLitePersistence.m"; sourceTree = "<group>"; };
+		61A08F690F7DC002005362D4 /* SQLitePersistentObject-Testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SQLitePersistentObject-Testing.h"; path = "Classes/SQLitePersistentObject-Testing.h"; sourceTree = "<group>"; };
+		61A08F6A0F7DC002005362D4 /* SQLitePersistentObject-Testing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SQLitePersistentObject-Testing.m"; path = "Classes/SQLitePersistentObject-Testing.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +160,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				61A08F640F7DBFDF005362D4 /* Classes */,
 				619929F40F47F9650052219A /* src */,
 				00A25A210F20670B00C867AC /* Fixtures */,
 				00A18ECE0EE9460F0065BA6B /* Tests */,
@@ -212,6 +216,15 @@
 			name = src;
 			path = ../src;
 			sourceTree = SOURCE_ROOT;
+		};
+		61A08F640F7DBFDF005362D4 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				61A08F690F7DC002005362D4 /* SQLitePersistentObject-Testing.h */,
+				61A08F6A0F7DC002005362D4 /* SQLitePersistentObject-Testing.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -308,6 +321,7 @@
 				61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */,
 				377D48B40F58AAE3007D613B /* TestReversion.m in Sources */,
 				37D35B9C0F67EAF300EEFFDF /* TestVariadicMethods.m in Sources */,
+				61A08F6B0F7DC002005362D4 /* SQLitePersistentObject-Testing.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

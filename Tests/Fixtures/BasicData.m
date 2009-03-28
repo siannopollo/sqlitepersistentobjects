@@ -7,6 +7,7 @@
 //
 
 #import "BasicData.h"
+#import "SQLitePersistentObject-Testing.h"
 
 @implementation BasicData
 @synthesize b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11;
