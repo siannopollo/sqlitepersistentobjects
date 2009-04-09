@@ -1218,8 +1218,7 @@ NSMutableArray *checkedTables;
 		
 		
 		const char *methodName = sel_getName(theMethod);
-		NSString *methodBeingCalled = [[NSString alloc] initWithUTF8String:methodName];
-		//	NSString *methodBeingCalled = [NSString stringWithUTF8String:methodName];
+		NSString *methodBeingCalled = [NSString stringWithUTF8String:methodName];
 		
 		if ([methodBeingCalled hasPrefix:@"findBy"])
 		{
