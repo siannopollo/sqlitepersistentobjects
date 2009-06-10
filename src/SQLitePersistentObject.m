@@ -156,7 +156,7 @@ NSMutableArray *checkedTables;
 	return [NSMutableArray array];
 }
 
-+(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString, ...
++(id)findFirstByCriteria:(NSString *)criteriaString, ...
 {
 	// Added variadic ability to all criteria accepting methods -SLyons (10/03/2009)
 	va_list argumentList;
@@ -216,7 +216,7 @@ NSMutableArray *checkedTables;
 	[objToDelete deleteObjectCascade:cascade];
 	
 }
-+(SQLitePersistentObject *)findByPK:(int)inPk
++(id)findByPK:(int)inPk
 {
 	return [self findFirstByCriteria:[NSString stringWithFormat:@"WHERE pk = %d", inPk]];
 }

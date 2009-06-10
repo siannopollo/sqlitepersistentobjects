@@ -70,8 +70,8 @@
  Find by criteria lets you specify the SQL conditions that will be used. The string passed in should start with the word WHERE. So, to search for a value with a pk value of 1, you would pass in @"WHERE pk = 1". When comparing to strings, the string comparison must be in single-quotes like this @"WHERE name = 'smith'".
  */
 +(NSArray *)findByCriteria:(NSString *)criteriaString, ...;
-+(SQLitePersistentObject *)findFirstByCriteria:(NSString *)criteriaString, ...;
-+(SQLitePersistentObject *)findByPK:(int)inPk;
++(id)findFirstByCriteria:(NSString *)criteriaString, ...;
++(id)findByPK:(int)inPk;
 +(NSArray *)allObjects;
 
 /*!
