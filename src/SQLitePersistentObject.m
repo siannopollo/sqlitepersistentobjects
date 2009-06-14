@@ -691,7 +691,7 @@ NSMutableArray *checkedTables;
 #pragma mark Public Instance Methods
 +(id)objectWithDictionary:(NSDictionary *)dictionary
 {
-  return [[self alloc] initWithDictionary:dictionary];
+  return [[super alloc] initWithDictionary:dictionary];
 }
 -(id)initWithDictionary:(NSDictionary *)dictionary
 {
