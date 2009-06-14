@@ -36,6 +36,7 @@
 		61992A200F47F9650052219A /* SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A100F47F9650052219A /* SQLitePersistentObject.m */; };
 		61992A210F47F9650052219A /* UIImage-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 61992A120F47F9650052219A /* UIImage-SQLitePersistence.m */; };
 		61A08F6B0F7DC002005362D4 /* SQLitePersistentObject-Testing.m in Sources */ = {isa = PBXBuildFile; fileRef = 61A08F6A0F7DC002005362D4 /* SQLitePersistentObject-Testing.m */; };
+		B88995470FE495760026D3AF /* TestInitialization.m in Sources */ = {isa = PBXBuildFile; fileRef = B88995460FE495760026D3AF /* TestInitialization.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,7 @@
 		61992A120F47F9650052219A /* UIImage-SQLitePersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-SQLitePersistence.m"; sourceTree = "<group>"; };
 		61A08F690F7DC002005362D4 /* SQLitePersistentObject-Testing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SQLitePersistentObject-Testing.h"; path = "Classes/SQLitePersistentObject-Testing.h"; sourceTree = "<group>"; };
 		61A08F6A0F7DC002005362D4 /* SQLitePersistentObject-Testing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SQLitePersistentObject-Testing.m"; path = "Classes/SQLitePersistentObject-Testing.m"; sourceTree = "<group>"; };
+		B88995460FE495760026D3AF /* TestInitialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestInitialization.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				377D48B30F58AAE3007D613B /* TestReversion.m */,
 				00DC746C0F22F391000D1CC6 /* TestDeleting.m */,
 				00A625000F1F472A00696BD9 /* TestSavingAndLoading.m */,
+				B88995460FE495760026D3AF /* TestInitialization.m */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
@@ -322,6 +325,7 @@
 				377D48B40F58AAE3007D613B /* TestReversion.m in Sources */,
 				37D35B9C0F67EAF300EEFFDF /* TestVariadicMethods.m in Sources */,
 				61A08F6B0F7DC002005362D4 /* SQLitePersistentObject-Testing.m in Sources */,
+				B88995470FE495760026D3AF /* TestInitialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

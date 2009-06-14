@@ -689,6 +689,23 @@ NSMutableArray *checkedTables;
 }
 #pragma mark -
 #pragma mark Public Instance Methods
++(id)objectWithDictionary:(NSDictionary *)dictionary
+{
+  return [[self alloc] initWithDictionary:dictionary];
+}
+-(id)initWithDictionary:(NSDictionary *)dictionary
+{
+  if (self = [super init]) {
+    NSString *propertyName, *firstLetter, *remaingLetters, *selectorName;
+    for (propertyName in dictionary) {
+      firstLetter = [[propertyName substringToIndex:1] capitalizedString];
+      remaingLetters = [propertyName substringFromIndex:1];
+      selectorName = [NSString stringWithFormat:@"set%@%@:", firstLetter, remaingLetters];
+      [self performSelector:NSSelectorFromString(selectorName) withObject:[dictionary objectForKey:propertyName]];
+    }
+  }
+  return self;  
+}
 -(int)pk
 {
 	return pk;
