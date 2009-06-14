@@ -691,11 +691,11 @@ NSMutableArray *checkedTables;
 #pragma mark Public Instance Methods
 +(id)objectWithDictionary:(NSDictionary *)dictionary
 {
-  return [[super alloc] initWithDictionary:dictionary];
+  return [[self alloc] initWithDictionary:dictionary];
 }
 -(id)initWithDictionary:(NSDictionary *)dictionary
 {
-  if (self = [super init]) {
+  if (self = [self init]) {
     NSString *propertyName, *firstLetter, *remaingLetters, *selectorName;
     for (propertyName in dictionary) {
       firstLetter = [[propertyName substringToIndex:1] capitalizedString];
